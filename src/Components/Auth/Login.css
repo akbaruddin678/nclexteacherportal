@@ -1,0 +1,136 @@
+/* src/components/Auth/Login.css */
+
+.login-page {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.login-left {
+  flex: 1;
+  background: #f8f9fc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.illustration {
+  max-width: 90%;
+  height: auto;
+}
+
+.tagline {
+  margin-top: 30px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.social-icons {
+  margin-top: 40px;
+}
+
+.social-icons i {
+  font-size: 20px;
+  margin: 0 10px;
+  color: #333;
+  cursor: pointer;
+}
+
+.login-right {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+}
+
+.login-box h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.login-box p {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.login-box form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.login-box form input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field span {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-bottom: 16px;
+}
+
+.forgot-password a {
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-left, .login-right {
+    width: 100%;
+    height: auto;
+  }
+
+  .illustration {
+    max-width: 70%;
+  }
+}

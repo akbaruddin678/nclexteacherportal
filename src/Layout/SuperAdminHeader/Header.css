@@ -1,0 +1,92 @@
+/* src/Components/Layout/Header/Header.css */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  height: 70px;
+  margin: 1rem;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1e1e2f;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 0.75rem;
+}
+
+.username {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 150px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown-menu li {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f5f5f5;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

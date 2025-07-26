@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react"
 import "./Registrations.css"
 import { useNavigate, useLocation } from "react-router-dom";
+// Import Material icons (Md)
+import {
+  MdSchool,
+  MdPeople,
+  MdPerson
+} from "react-icons/md";
 
 const Registration = ({ initialTab = "principal" }) => {
   const [activeTab, setActiveTab] = useState(initialTab)
@@ -109,19 +115,19 @@ const Registration = ({ initialTab = "principal" }) => {
           className={`tab-btn ${activeTab === "principal" ? "active" : ""}`}
           onClick={() => handleTabChange("principal")}
         >
-          👔 Principal
+          <MdPerson /> Principal
         </button>
         <button
           className={`tab-btn ${activeTab === "teacher" ? "active" : ""}`}
           onClick={() => handleTabChange("teacher")}
         >
-          👨‍🏫 Teacher
+          <MdSchool /> Teacher
         </button>
         <button
           className={`tab-btn ${activeTab === "student" ? "active" : ""}`}
           onClick={() => handleTabChange("student")}
         >
-          👨‍🎓 Student
+          <MdPeople /> Student
         </button>
       </div>
 

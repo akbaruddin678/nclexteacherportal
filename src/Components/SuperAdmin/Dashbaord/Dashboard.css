@@ -39,8 +39,12 @@
 
 .dashboard-content {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;
   gap: 40px;
+}
+
+.events-section{
+  width: fit-content;
 }
 
 .courses-section h2,
