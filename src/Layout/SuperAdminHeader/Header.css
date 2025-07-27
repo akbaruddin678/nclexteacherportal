@@ -1,92 +1,170 @@
-/* src/Components/Layout/Header/Header.css */
+:root {
+  --bg: #fff;
+  --primary: #4e73df;
+  --text: #333;
+  --muted: #6c757d;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --notif-red: #e74a3b;
+}
 
+/* === Header Wrapper === */
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 2rem;
-  background-color: #ffffff;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  position: sticky;
-  top: 0;
-  z-index: 1001;
-  height: 70px;
-  margin: 1rem;
+  padding: 1rem 2rem;
+  background: var(--bg);
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
-.logo {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #1e1e2f;
+/* === LEFT SIDE === */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.greeting {
+  display: flex;
+  flex-direction: column;
+}
+
+.greeting-title {
   margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
+.greeting-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* === RIGHT SIDE === */
 .header-right {
   display: flex;
   align-items: center;
-  position: relative;
-  gap: 0.75rem;
+  gap: 1.5rem;
 }
 
-.username {
+/* === Navigation Links (hidden on mobile) === */
+.nav-links {
+  display: flex;
+  gap: 2rem;
   font-size: 1rem;
   font-weight: 500;
-  color: #333333;
-  white-space: nowrap;
 }
 
-.avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+.nav-link {
+  position: relative;
+  text-decoration: none;
+  color: var(--text);
+  padding-bottom: 0.25rem;
+  transition: color 0.2s;
 }
 
-.avatar:hover {
-  transform: scale(1.05);
+.nav-link:hover {
+  color: var(--primary);
 }
 
-.dropdown-menu {
+.nav-link.active {
+  color: var(--primary);
+}
+
+.nav-link.active::after {
+  content: '';
   position: absolute;
-  top: 60px;
-  right: 0;
-  background-color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  min-width: 150px;
-  animation: fadeIn 0.2s ease-in-out;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
 }
 
-.dropdown-menu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.dropdown-menu li {
-  padding: 10px 16px;
-  font-size: 0.95rem;
-  color: #333;
+/* === Notification Bell === */
+.notification-btn {
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  padding: 0.5rem;
+  color: var(--text);
+  transition: color 0.2s;
+  position: relative;
 }
 
-.dropdown-menu li:hover {
-  background-color: #f5f5f5;
+.notification-btn:hover {
+  color: var(--primary);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
+.notification-btn .badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-block;
+  min-width: 16px;
+  height: 16px;
+  background: var(--notif-red);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: bold;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 16px;
+}
+
+/* === Avatar Button === */
+.avatar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: filter 0.2s;
+  border: none;
+}
+
+.avatar-btn:hover {
+  filter: brightness(0.9);
+}
+
+/* === Hamburger Button (Mobile only) === */
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 1rem;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: block;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .nav-links {
+    display: none;
   }
 }
+
+
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+  }
+  .greeting{
+    display: none !important;
+  }
+}
+

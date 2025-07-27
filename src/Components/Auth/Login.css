@@ -134,3 +134,21 @@
     max-width: 70%;
   }
 }
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 40px; /* leave space for icon */
+}
+
+.toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #666;
+  cursor: pointer;
+}

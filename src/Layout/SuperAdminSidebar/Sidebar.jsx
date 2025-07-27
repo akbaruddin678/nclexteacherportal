@@ -1,68 +1,65 @@
-// src/Components/Sidebar/Sidebar.jsx
 
 import "./Sidebar.css";
-import { useState } from "react";
-import Logo from '../../../public/logo.svg'
 import { useNavigate, useLocation } from "react-router-dom";
-
-// Import Material icons (Md)
 import {
-  MdHome,
-  MdSchool,
-  MdPeople,
-  MdPerson,
-  MdAssignment,
-  MdLibraryBooks,
-  MdNotifications,
-  MdBarChart,
-  MdSettings,
+  MdHome, MdSchool, MdPeople, MdPerson, MdAssignment,
+  MdLibraryBooks, MdNotifications, MdBarChart, MdSettings, MdMenuBook , MdHelp
 } from "react-icons/md";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const activeComponent = location.pathname;
 
-  const [isOpen, setIsOpen] = useState(false); // Mobile toggle
-
   const menuItems = [
-    { id: "/superadmin/dashboard", label: "Home", icon: <MdHome /> },
-  { id: "/superadmin/manageprincipals", label: "Principals", icon: <MdPerson /> },
-  { id: "/superadmin/manageteachers", label: "Teachers", icon: <MdSchool /> },
-  { id: "/superadmin/managestudents", label: "Students", icon: <MdPeople /> },
-  { id: "/superadmin/registrations", label: "Registrations", icon: <MdAssignment /> },
-  { id: "/superadmin/uploadlessonsplans", label: "Lesson Plans", icon: <MdLibraryBooks /> },
-  { id: "/superadmin/notifications", label: "Notifications", icon: <MdNotifications /> },
-  { id: "/superadmin/reports", label: "Reports", icon: <MdBarChart /> },
-  { id: "/superadmin/settings", label: "Settings", icon: <MdSettings /> },
+    { id: "/superadmin/dashboard", label: "Dashboard", icon: <MdHome /> },
+    { id: "/superadmin/manageprincipals", label: "Principals", icon: <MdPerson /> },
+    { id: "/superadmin/manageteachers", label: "Teachers", icon: <MdSchool /> },
+    { id: "/superadmin/managestudents", label: "Students", icon: <MdPeople /> },
+    { id: "/superadmin/registrations", label: "Registrations", icon: <MdAssignment /> },
+    { id: "/superadmin/courses", label: "Courses", icon: <MdMenuBook  /> },
+    { id: "/superadmin/uploadlessonsplans", label: "Lesson Plans", icon: <MdLibraryBooks /> },
+    { id: "/superadmin/notifications", label: "Notifications", icon: <MdNotifications /> },
+    { id: "/superadmin/reports", label: "Reports", icon: <MdBarChart /> },
+    { id: "/superadmin/settings", label: "Settings", icon: <MdSettings /> },
   ];
 
   return (
-    <>
-      <button className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>
-        ☰
-      </button>
-      <div className={`sidebar ${isOpen ? "open" : ""}`}>
-        <div className="sidebar-header">
-          <h2 onClick={() => navigate("/dashboard")} style={{ cursor: "pointer" }}>
-           {/* <img src={Logo} alt="" /> */}
-            InterTech LMS
-          </h2>
-        </div>
-        <nav className="sidebar-nav">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              className={`nav-item ${activeComponent === item.id ? "active" : ""}`}
-              onClick={() => navigate(item.id)}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
-            </button>
-          ))}
-        </nav>
+    <div className={`sidebar ${isOpen ? "open" : ""}`}>
+      <div className="sidebar-header">
+        <h2 onClick={() => navigate("/superadmin/dashboard")} style={{ cursor: "pointer" }}>
+          InterTech LMS
+        </h2>
       </div>
-    </>
+      <nav className="sidebar-nav" role="navigation">
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            className={`nav-item ${activeComponent === item.id ? "active" : ""}`}
+            onClick={() => {
+              navigate(item.id);
+              setIsOpen?.(false); // Close on mobile after navigation
+            }}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
+          </button>
+        ))}
+      </nav>
+    {/* Bottom item */}
+      <div className="sidebar-footer">
+        <button
+          className={`nav-item ${activeComponent === "/superadmin/help" ? "active" : ""}`}
+          onClick={() => {
+            navigate("/superadmin/help");
+            setIsOpen?.(false);
+          }}
+        >
+          <span className="nav-icon"><MdHelp /></span>
+          <span className="nav-label">Help and Docs</span>
+        </button>
+      </div>
+    </div>
   );
 };
 

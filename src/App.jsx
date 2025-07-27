@@ -1,59 +1,96 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import "./App.css";
 
-import SuperAdminLayout from './Layout/SuperAdminLayout'; // ← using the updated layout
-import SuperAdminDashboard from './Components/SuperAdmin/Dashbaord/Dashboard';
-import ManagePrincipals from './Components/SuperAdmin/ManagePrincipals/ManagePrincipals';
-import ManageStudents from './Components/SuperAdmin/ManageStudents/ManageStudents';
-import ManageTeachers from './Components/SuperAdmin/ManageTeachers/ManageTeachers';
-import Notifications from './Components/SuperAdmin/Notifications/Notifications';
-import Registrations from './Components/SuperAdmin/Registrations/Registrations';
-import Reports from './Components/SuperAdmin/Reports/Reports';
-import Settings from './Components/SuperAdmin/Settings/Settings';
-import UploadLessonsPlans from './Components/SuperAdmin/UploadLessonsPlans/UploadLessonsPlans';
+import SuperAdminLayout from "./Layout/SuperAdminLayout"; // ← using the updated layout
+import SuperAdminDashboard from "./Components/SuperAdmin/Dashbaord/Dashboard";
+import SuperAdminManagePrincipals from "./Components/SuperAdmin/ManagePrincipals/ManagePrincipals";
+import SuperAdminManageStudents from "./Components/SuperAdmin/ManageStudents/ManageStudents";
+import SuperAdminManageTeachers from "./Components/SuperAdmin/ManageTeachers/ManageTeachers";
+import SuperAdminNotifications from "./Components/SuperAdmin/Notifications/Notifications";
+import SuperAdminRegistrations from "./Components/SuperAdmin/Registrations/Registrations";
+import SuperAdminReports from "./Components/SuperAdmin/Reports/Reports";
+import SuperAdminSettings from "./Components/SuperAdmin/Settings/Settings";
+import SuperAdminUploadLessonsPlans from "./Components/SuperAdmin/UploadLessonsPlans/UploadLessonsPlans";
+import SuperAdminCourses from "./Components/SuperAdmin/Courses/Courses";
+
+import CoordinatorLayout from "./Layout/CoordinatorLayout";
+import CoordinatorDashboard from "./Components/Coordinator/Dashbaord/Dashboard";
+import CoordinatorManageStudents from "./Components/Coordinator/ManageStudents/ManageStudents";
+import CoordinatorManageTeachers from "./Components/Coordinator/ManageTeachers/ManageTeachers";
+import CoordinatorNotifications from "./Components/Coordinator/Notifications/Notifications";
+import CoordinatorRegistrations from "./Components/Coordinator/Registrations/Registrations";
+import CoordinatorReports from "./Components/Coordinator/Reports/Reports";
+import CoordinatorSettings from "./Components/Coordinator/Settings/Settings";
+import CoordinatorUploadLessonsPlans from "./Components/Coordinator/UploadLessonsPlans/UploadLessonsPlans";
+import CoordinatorCourses from "./Components/Coordinator/Courses/Courses";
+
+import TeacherLayout from "./Layout/TeacherLayout";
+import TeacherDashboard from "./Components/Teacher/Dashbaord/Dashboard";
+import TeacherManageStudents from "./Components/Teacher/ManageStudents/ManageStudents";
+import TeacherNotifications from "./Components/Teacher/Notifications/Notifications";
+import TeacherRegistrations from "./Components/Teacher/Registrations/Registrations";
+import TeacherReports from "./Components/Teacher/Reports/Reports";
+import TeacherSettings from "./Components/Teacher/Settings/Settings";
+import TeacherUploadLessonsPlans from "./Components/Teacher/UploadLessonsPlans/UploadLessonsPlans";
+import TeacherCourses from "./Components/Coordinator/Courses/Courses";
 
 
-import CoordinatorLayout from './Layout/CoordinatorLayout'
-import CoordinatorDashboard from './Components/Coordinator/dashboard/Dashbaord'
+import Help from './Components/Common/Help/Help'
 
 
-import TeacherLayout from './Layout/TeacherLayout'
-import TeacherDashboard from './Components/Teacher/dashboard/Dashboard'
-
-
-import Login from './components/Auth/Login'; 
-
+import Login from "./components/Auth/Login";
 
 function App() {
   return (
     <Router>
       <Routes>
-
-      <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
         {/* Nest all superadmin routes under this layout */}
         <Route path="/superadmin" element={<SuperAdminLayout />}>
           <Route path="dashboard" element={<SuperAdminDashboard />} />
-          <Route path="manageprincipals" element={<ManagePrincipals />} />
-          <Route path="managestudents" element={<ManageStudents />} />
-          <Route path="manageteachers" element={<ManageTeachers />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="registrations" element={<Registrations />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="uploadlessonsplans" element={<UploadLessonsPlans />} />
+          <Route path="manageprincipals" element={<SuperAdminManagePrincipals />} />
+          <Route path="managestudents" element={<SuperAdminManageStudents />} />
+          <Route path="manageteachers" element={<SuperAdminManageTeachers />} />
+          <Route path="notifications" element={<SuperAdminNotifications />} />
+          <Route path="registrations" element={<SuperAdminRegistrations />} />
+          <Route path="reports" element={<SuperAdminReports />} />
+          <Route path="settings" element={<SuperAdminSettings />} />
+          <Route path="uploadlessonsplans" element={<SuperAdminUploadLessonsPlans />} />
+          <Route path="courses" element={<SuperAdminCourses />} />
+          <Route path="help" element={<Help />} />
         </Route>
-
 
         {/* Nest all coordinator routes under this layout */}
         <Route path="/coordinator" element={<CoordinatorLayout />}>
           <Route path="dashboard" element={<CoordinatorDashboard />} />
+          <Route path="managestudents" element={<CoordinatorManageStudents />} />
+          <Route path="manageteachers" element={<CoordinatorManageTeachers />} />
+          <Route path="notifications" element={<CoordinatorNotifications />} />
+          <Route path="registrations" element={<CoordinatorRegistrations />} />
+          <Route path="reports" element={<CoordinatorReports />} />
+          <Route path="settings" element={<CoordinatorSettings />} />
+          <Route path="uploadlessonsplans" element={<CoordinatorUploadLessonsPlans />} />
+          <Route path="courses" element={<CoordinatorCourses />} />
+          <Route path="help" element={<Help />} />
         </Route>
-
 
         {/* Nest all teacher routes under this layout */}
         <Route path="/teacher" element={<TeacherLayout />}>
           <Route path="dashboard" element={<TeacherDashboard />} />
+           <Route path="managestudents" element={<TeacherManageStudents />} />
+          <Route path="notifications" element={<TeacherNotifications />} />
+          <Route path="registrations" element={<TeacherRegistrations />} />
+          <Route path="reports" element={<TeacherReports />} />
+          <Route path="settings" element={<TeacherSettings />} />
+          <Route path="uploadlessonsplans" element={<TeacherUploadLessonsPlans />} />
+          <Route path="courses" element={<TeacherCourses />} />
+          <Route path="help" element={<Help />} />
         </Route>
       </Routes>
     </Router>

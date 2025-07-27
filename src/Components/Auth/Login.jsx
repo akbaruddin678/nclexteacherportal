@@ -1,32 +1,29 @@
-// src/components/Auth/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md'; // 👁️ icons
 import './Login.css';
-import illustration from '../../../public/illustration.svg'; // Put your image here
+import illustration from '../../../public/illustration.svg';
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // ✅ Role detection logic
     let role = null;
-    if (email === 'admin@example.com' && password === '123456') {
+    if (email === 'admin@lms.com' && password === 'admin') {
       role = 'superadmin';
-    } else if (email === 'coordinator@example.com' && password === '123456') {
+    } else if (email === 'coord@lms.com' && password === 'coord') {
       role = 'coordinator';
-    } else if (email === 'teacher@example.com' && password === '123456') {
+    } else if (email === 'teacher@lms.com' && password === 'teacher') {
       role = 'teacher';
     }
 
     if (role) {
-      // 🔐 Optional: store login session
-      // localStorage.setItem('userRole', role);
       navigate(`/${role}/dashboard`);
     } else {
       setError('Invalid email or password');
@@ -35,7 +32,6 @@ const Login = () => {
 
   return (
     <div className="login-page">
-      {/* Left side */}
       <div className="login-left">
         <img src={illustration} alt="Digital Learning" className="illustration" />
         <h2 className="tagline">Empowering minds through digital learning!</h2>
@@ -46,7 +42,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right side */}
       <div className="login-right">
         <div className="login-box">
           <h2>Welcome Back</h2>
@@ -73,7 +68,15 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <span onClick={() => setShowPassword(!showPassword)}>👁️</span>
+              <span
+                className="toggle-icon"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  top:"21px"
+                }}
+              >
+                {showPassword ? <MdVisibilityOff size={22} /> : <MdVisibility size={22} />}
+              </span>
             </div>
 
             <div className="forgot-password">
