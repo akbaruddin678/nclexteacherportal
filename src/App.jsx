@@ -43,7 +43,7 @@ import TeacherCourses from "./Components/Coordinator/Courses/Courses";
 import Help from './Components/Common/Help/Help'
 
 
-import Login from "./components/Auth/Login.jsx"
+import Login from "./Components/Auth/Login"
 
 function App() {
   return (
