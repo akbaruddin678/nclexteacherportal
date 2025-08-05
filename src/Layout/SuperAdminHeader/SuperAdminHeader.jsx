@@ -1,19 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Header.css";
 import { FiBell, FiUser, FiMenu, FiSun, FiMoon } from "react-icons/fi";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const navItems = [
-  { id: "/superadmin/dashboard", label: "Dashboard" },
-  { id: "/superadmin/manageteachers", label: "Teachers" },
-  { id: "/superadmin/managestudents", label: "Students" },
-  { id: "/superadmin/courses", label: "Courses" },
-  { id: "/superadmin/settings", label: "Settings" },
-];
+// const navItems = [
+//   { id: "/superadmin/dashboard", label: "Dashboard" },
+//   { id: "/superadmin/manageteachers", label: "Teachers" },
+//   { id: "/superadmin/managestudents", label: "Students" },
+//   { id: "/superadmin/courses", label: "Courses" },
+//   { id: "/superadmin/settings", label: "Settings" },
+// ];
 
 const Header = ({ onToggleSidebar }) => {
   const navigate = useNavigate();
-  const location = window.location.pathname;
+  // const location = window.location.pathname;
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
 
@@ -65,7 +65,7 @@ const Header = ({ onToggleSidebar }) => {
       </div>
 
       <div className="header-right">
-        <nav className="nav-links">
+        {/* <nav className="nav-links">
           {navItems.map((item) => (
             <Link
               key={item.id}
@@ -76,7 +76,7 @@ const Header = ({ onToggleSidebar }) => {
               {item.label}
             </Link>
           ))}
-        </nav>
+        </nav> */}
 
         <button
           className="icon-button notification-btn"
