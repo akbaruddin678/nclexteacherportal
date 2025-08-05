@@ -1,37 +1,46 @@
+/* Notifications.css - Updated styling for a more modern, attractive look */
+
 .notifications {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+  background-color: #f4f8fc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
 }
 
 .page-header {
+  text-align: center;
   margin-bottom: 30px;
 }
 
 .page-header h1 {
-  font-size: 24px;
+  font-size: 36px;
   color: #333;
-  margin-bottom: 8px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .page-header p {
-  color: #666;
-  font-size: 14px;
+  font-size: 16px;
+  color: #555;
+  margin-top: 10px;
 }
 
-.notification-form-container {
-  background: white;
-  padding: 30px;
+.notification-form-container,
+.message-form-container {
+  background-color: #fff;
+  padding: 25px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.notification-form {
+.notification-form,
+.message-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .form-group {
@@ -40,147 +49,155 @@
 }
 
 .form-group label {
-  margin-bottom: 8px;
-  color: #333;
-  font-weight: 500;
   font-size: 14px;
+  color: #444;
+  margin-bottom: 6px;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 12px 16px;
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  font-family: inherit;
-  transition: border-color 0.2s ease;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  outline: none;
   border-color: #1976d2;
-  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-.form-group small {
-  margin-top: 4px;
-  color: #666;
-  font-size: 12px;
-}
-
-.form-actions {
-  margin-top: 10px;
-  display: flex;
-  justify-content: flex-end;
+  background-color: #fff;
+  outline: none;
 }
 
 .send-btn {
   background-color: #1976d2;
   color: white;
+  font-size: 16px;
+  padding: 12px;
   border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 14px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .send-btn:hover {
   background-color: #1565c0;
 }
 
-.notifications-history {
-  background: white;
-  padding: 30px;
+.send-btn:focus {
+  outline: none;
+}
+
+.filters {
+  margin: 20px 0;
+}
+
+.filters input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.notifications-history h2 {
-  font-size: 20px;
+  font-size: 16px;
   color: #333;
-  margin-bottom: 20px;
-  font-weight: 600;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
 }
 
-.notifications-list {
+.filters input:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
+.notifications-history,
+.messages-history {
+  margin-top: 30px;
+}
+
+.notifications-list,
+.messages-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
-.notification-item {
+.notification-item,
+.message-item {
+  background-color: #fff;
   padding: 20px;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  background-color: #fafafa;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
-.notification-header {
+.notification-item:hover,
+.message-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.notification-header,
+.message-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 15px;
 }
 
-.notification-header h3 {
-  font-size: 16px;
+.notification-header h3,
+.message-header h3 {
+  font-size: 18px;
   color: #333;
   margin: 0;
-  font-weight: 600;
 }
 
-.notification-status {
-  background-color: #e8f5e8;
-  color: #2e7d32;
-  padding: 4px 8px;
-  border-radius: 12px;
+.notification-status,
+.message-status {
+  background-color: #1976d2;
+  color: white;
+  padding: 5px 10px;
   font-size: 12px;
-  font-weight: 500;
+  border-radius: 5px;
 }
 
-.notification-recipient {
-  color: #666;
+.notification-recipient,
+.message-sender {
   font-size: 14px;
-  margin: 4px 0;
-  font-weight: 500;
+  color: #777;
 }
 
-.notification-message {
-  color: #333;
+.notification-message,
+.message-content {
   font-size: 14px;
-  line-height: 1.4;
-  margin: 8px 0;
+  color: #444;
+  margin-bottom: 10px;
 }
 
-.notification-date {
+.notification-date,
+.message-date {
+  font-size: 12px;
   color: #999;
-  font-size: 12px;
-  margin: 8px 0 0 0;
 }
 
-@media (max-width: 768px) {
-  .notifications {
-    padding: 15px;
-  }
+button {
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
 
-  .notification-form-container,
-  .notifications-history {
-    padding: 20px;
-  }
+button:hover {
+  background-color: #1565c0;
+}
 
-  .notification-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
+button:focus {
+  outline: none;
 }
