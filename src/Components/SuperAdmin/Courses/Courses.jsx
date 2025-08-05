@@ -1,67 +1,20 @@
-// Updated Courses.jsx with program-wise structure and improved data model
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Courses.css';
 import { MdSearch } from 'react-icons/md';
 
+// Import the JSON file directly (if it's inside the src folder)
+import categoryData from '../Category/categoryData.json';  // Adjust the path if necessary
+
 const CoursesOffered = () => {
-  const [programs, setPrograms] = useState([
-    {
-      name: 'InterTech',
-      subjects: [
-        {
-          name: 'Mathematics 101',
-          description: 'Introduction to basic mathematical concepts.',
-          teacher: 'Mr. Thompson',
-          students: 35,
-          schedule: 'Mon, Wed, Fri 9:00 AM – 10:00 AM',
-        },
-        {
-          name: 'Computer Science Basics',
-          description: 'Intro to programming and computer principles.',
-          teacher: 'Ms. Foster',
-          students: 25,
-          schedule: 'Mon, Wed, Fri 11:00 AM – 1:00 PM',
-        },
-      ],
-    },
-    {
-      name: 'Matric Tech',
-      subjects: [
-        {
-          name: 'English Literature',
-          description: 'A survey of classic English literature.',
-          teacher: '',
-          students: 28,
-          schedule: 'Mon, Wed, Fri 11:00 AM – 1:00 PM',
-        },
-        {
-          name: 'History of Civilization',
-          description: 'Overview of world history from ancient times.',
-          teacher: '',
-          students: 30,
-          schedule: 'Mon, Wed, Fri 9:00 AM – 10:00 AM',
-        },
-      ],
-    },
-    {
-      name: 'Medical Tech',
-      subjects: [
-        {
-          name: 'Science Fundamentals',
-          description: 'Physics, chemistry, and biology fundamentals.',
-          teacher: 'Dr. Evans',
-          students: 42,
-          schedule: 'Mon, Wed, Fri 1:00 PM – 3:00 PM',
-        },
-      ],
-    },
-  ]);
-
-  const [selectedProgram, setSelectedProgram] = useState('InterTech');
-
+  const [cities, setCities] = useState([]); // Stores the list of cities and campus data
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedCampus, setSelectedCampus] = useState('');
+  const [selectedProgram, setSelectedProgram] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const [newCourse, setNewCourse] = useState({
-    program: 'InterTech',
+    city: '',
+    campus: '',
+    program: '',
     name: '',
     description: '',
     teacher: '',
@@ -69,7 +22,15 @@ const CoursesOffered = () => {
     schedule: '',
   });
 
-  const [showModal, setShowModal] = useState(false);
+  // Fetch data from the imported JSON structure
+  useEffect(() => {
+  console.log(categoryData);  // Check the data structure
+  setCities(categoryData);
+  setSelectedCity(categoryData[0]?.name || '');
+  setSelectedCampus(categoryData[0]?.campuses[0]?.name || '');
+  setSelectedProgram(categoryData[0]?.campuses[0]?.programs[0]?.name || '');
+}, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -78,29 +39,59 @@ const CoursesOffered = () => {
 
   const handleAddCourse = (e) => {
     e.preventDefault();
-    const updatedPrograms = programs.map((p) => {
-      if (p.name === newCourse.program) {
+    const updatedCities = cities.map((city) => {
+      if (city.name === newCourse.city) {
         return {
-          ...p,
-          subjects: [
-            ...p.subjects,
-            {
-              name: newCourse.name,
-              description: newCourse.description,
-              teacher: newCourse.teacher,
-              students: parseInt(newCourse.students),
-              schedule: newCourse.schedule,
-            },
-          ],
+          ...city,
+          campuses: city.campuses.map((campus) => {
+            if (campus.name === newCourse.campus) {
+              return {
+                ...campus,
+                programs: campus.programs.map((program) => {
+                  if (program.name === newCourse.program) {
+                    return {
+                      ...program,
+                      subjects: [
+                        ...program.subjects,
+                        {
+                          name: newCourse.name,
+                          description: newCourse.description,
+                          teacher: newCourse.teacher,
+                          students: parseInt(newCourse.students),
+                          schedule: newCourse.schedule,
+                        },
+                      ],
+                    };
+                  }
+                  return program;
+                }),
+              };
+            }
+            return campus;
+          }),
         };
       }
-      return p;
+      return city;
     });
 
-    setPrograms(updatedPrograms);
-    setNewCourse({ program: 'InterTech', name: '', description: '', teacher: '', students: '', schedule: '' });
+    setCities(updatedCities);
+    setNewCourse({
+      city: '',
+      campus: '',
+      program: '',
+      name: '',
+      description: '',
+      teacher: '',
+      students: '',
+      schedule: '',
+    });
     setShowModal(false);
   };
+
+  // Find selected city, campus, and program
+  const selectedCityData = cities.find((city) => city.name === selectedCity);
+  const selectedCampusData = selectedCityData?.campuses.find((campus) => campus.name === selectedCampus);
+  const selectedProgramData = selectedCampusData?.programs.find((program) => program.name === selectedProgram);
 
   return (
     <div className="courses-container">
@@ -111,9 +102,22 @@ const CoursesOffered = () => {
 
       <div className="sub-header">
         <a href="#" className="manage-link">Manage course offering</a>
+        {/* City Selection */}
+        <select onChange={(e) => setSelectedCity(e.target.value)} value={selectedCity}>
+          {cities.map((city, idx) => (
+            <option key={idx} value={city.name}>{city.name}</option>
+          ))}
+        </select>
+        {/* Campus Selection */}
+        <select onChange={(e) => setSelectedCampus(e.target.value)} value={selectedCampus}>
+          {selectedCityData?.campuses.map((campus, idx) => (
+            <option key={idx} value={campus.name}>{campus.name}</option>
+          ))}
+        </select>
+        {/* Program Selection */}
         <select onChange={(e) => setSelectedProgram(e.target.value)} value={selectedProgram}>
-          {programs.map((prog, idx) => (
-            <option key={idx} value={prog.name}>{prog.name}</option>
+          {selectedCampusData?.programs.map((program, idx) => (
+            <option key={idx} value={program.name}>{program.name}</option>
           ))}
         </select>
       </div>
@@ -130,11 +134,11 @@ const CoursesOffered = () => {
             </tr>
           </thead>
           <tbody>
-            {programs.find((p) => p.name === selectedProgram)?.subjects.map((subject, idx) => (
+            {selectedProgramData?.subjects.map((subject, idx) => (
               <tr key={idx}>
                 <td>{subject.name}</td>
                 <td>{subject.description}</td>
-                <td>{subject.teacher || '-'}</td>
+                <td>{subject.teacher}</td>
                 <td>{subject.students}</td>
                 <td>{subject.schedule}</td>
               </tr>
@@ -143,15 +147,25 @@ const CoursesOffered = () => {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Modal for Adding New Course */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
             <h3>Add New Course</h3>
             <form onSubmit={handleAddCourse}>
+              <select name="city" value={newCourse.city} onChange={handleChange} required>
+                {cities.map((city, idx) => (
+                  <option key={idx} value={city.name}>{city.name}</option>
+                ))}
+              </select>
+              <select name="campus" value={newCourse.campus} onChange={handleChange} required>
+                {selectedCityData?.campuses.map((campus, idx) => (
+                  <option key={idx} value={campus.name}>{campus.name}</option>
+                ))}
+              </select>
               <select name="program" value={newCourse.program} onChange={handleChange} required>
-                {programs.map((p, idx) => (
-                  <option key={idx} value={p.name}>{p.name}</option>
+                {selectedCampusData?.programs.map((program, idx) => (
+                  <option key={idx} value={program.name}>{program.name}</option>
                 ))}
               </select>
               <input type="text" name="name" placeholder="Course Name" value={newCourse.name} onChange={handleChange} required />

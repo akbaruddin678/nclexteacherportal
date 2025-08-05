@@ -1,8 +1,7 @@
-// Enhanced Registration.jsx with CNIC, Salary, Subject, Guardian, and Auto-ID
-
 import { useState, useEffect } from "react";
 import "./Registrations.css";
 import { MdSchool, MdPeople, MdPerson } from "react-icons/md";
+import data from "../Category/categoryData.json"; // Import your category data
 
 const Registration = ({ initialTab = "principal" }) => {
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -31,10 +30,22 @@ const Registration = ({ initialTab = "principal" }) => {
     status: "Active"
   });
 
+  const [cities, setCities] = useState([]);
+  const [campuses, setCampuses] = useState([]);
+
   useEffect(() => {
-    setActiveTab(initialTab);
-    resetForm();
-  }, [initialTab]);
+    // Extract city and campus data from JSON file
+    const cityList = data.cities.map((city) => city.name);
+    setCities(cityList);
+  }, []);
+
+  useEffect(() => {
+    // Update campuses when city is selected
+    const selectedCity = data.cities.find((city) => city.name === formData.city);
+    if (selectedCity) {
+      setCampuses(selectedCity.campuses.map((campus) => campus.name));
+    }
+  }, [formData.city]);
 
   const generateStudentId = () => `STD${Date.now().toString().slice(-6)}`;
 
@@ -66,7 +77,7 @@ const Registration = ({ initialTab = "principal" }) => {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleTabChange = (tab) => {
@@ -124,19 +135,22 @@ const Registration = ({ initialTab = "principal" }) => {
             <label>City *</label>
             <select value={formData.city} onChange={(e) => handleInputChange("city", e.target.value)} required>
               <option value="">Select City</option>
-              <option value="Islamabad">Islamabad</option>
-              <option value="Lahore">Lahore</option>
-              <option value="Karachi">Karachi</option>
+              {cities.map((city, idx) => (
+                <option key={idx} value={city}>
+                  {city}
+                </option>
+              ))}
             </select>
           </div>
           <div className="form-group">
             <label>Campus *</label>
             <select value={formData.campus} onChange={(e) => handleInputChange("campus", e.target.value)} required>
               <option value="">Select Campus</option>
-              <option value="Main campus">Main campus</option>
-              <option value="North campus">North campus</option>
-              <option value="South campus">South campus</option>
-              <option value="West campus">West campus</option>
+              {campuses.map((campus, idx) => (
+                <option key={idx} value={campus}>
+                  {campus}
+                </option>
+              ))}
             </select>
           </div>
         </div>
