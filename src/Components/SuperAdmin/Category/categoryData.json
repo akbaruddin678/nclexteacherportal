@@ -1,47 +1,72 @@
-
 {
   "institutes": [
     {
       "name": "Alpha Institute",
       "city": "Lahore",
-      "students": 200,
-      "teachers": 15,
-      "principal": {
-        "name": "Dr. Ayesha Khan",
-        "email": "ayesha@alphainst.edu.pk",
-        "phone": "0321-1234567",
-        "image": "https://via.placeholder.com/120"
-      },
-      "courses": [
+      "programs": [
         {
-          "name": "Biology",
-          "students": ["Ahmed Raza", "Sara Ali", "Usman Iqbal", "Nida Hussain"]
+          "name": "InterTech",
+          "subjects": [
+            { "name": "English", "teacher": "Mr. Usman", "students": ["Ahmed Raza", "Sara Ali"] },
+            { "name": "Math", "teacher": "Ms. Sana", "students": ["Hassan Riaz", "Nida Hussain"] }
+          ]
         },
         {
-          "name": "Mathematics",
-          "students": ["Fatima Tariq", "Adeel Ahmad", "Hassan Riaz"]
+          "name": "MatricTech",
+          "subjects": [
+            { "name": "Urdu", "teacher": "Mr. Iqbal", "students": ["Fatima Tariq", "Adeel Ahmad"] }
+          ]
         }
       ]
     },
     {
       "name": "Beta College",
       "city": "Karachi",
-      "students": 150,
-      "teachers": 12,
-      "principal": {
-        "name": "Prof. Waleed Butt",
-        "email": "waleed@betacollege.pk",
-        "phone": "0300-9876543",
-        "image": "https://via.placeholder.com/120"
-      },
-      "courses": [
+      "programs": [
         {
-          "name": "Physics",
-          "students": ["Zain Shah", "Hira Noor", "Bilal Hanif"]
+          "name": "MedicalTech",
+          "subjects": [
+            { "name": "Biology", "teacher": "Dr. Hira", "students": ["Zain Shah", "Hira Noor"] },
+            { "name": "Chemistry", "teacher": "Dr. Rehan", "students": ["Bilal Hanif"] }
+          ]
         },
         {
-          "name": "Chemistry",
-          "students": ["Mahnoor Raza", "Tariq Jameel"]
+          "name": "InterTech",
+          "subjects": [
+            { "name": "Physics", "teacher": "Mr. Imran", "students": ["Kiran Khan", "Ahsan Bukhari"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Capital Science School",
+      "city": "Islamabad",
+      "programs": [
+        {
+          "name": "InterTech",
+          "subjects": [
+            { "name": "English", "teacher": "Ms. Fariha", "students": ["Saad Ahmed", "Mehak Ali"] },
+            { "name": "Computer", "teacher": "Mr. Taha", "students": ["Waqas Siddiqui"] }
+          ]
+        },
+        {
+          "name": "MatricTech",
+          "subjects": [
+            { "name": "Islamiyat", "teacher": "Mr. Basit", "students": ["Hania Rizvi", "Zohaib Khan"] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "City Vocational College",
+      "city": "Karachi",
+      "programs": [
+        {
+          "name": "MedicalTech",
+          "subjects": [
+            { "name": "Anatomy", "teacher": "Dr. Neha", "students": ["Talha Qureshi", "Farah Malik"] },
+            { "name": "Nursing Basics", "teacher": "Ms. Huma", "students": ["Rida Khan"] }
+          ]
         }
       ]
     }
