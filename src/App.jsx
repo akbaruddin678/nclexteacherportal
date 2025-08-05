@@ -6,11 +6,9 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
-import SuperAdminLayout from "./Layout/SuperAdminLayout"; // ← using the updated layout
+import SuperAdminLayout from "./Layout/SuperAdminLayout";
+import SuperAdminCategory from './Components/SuperAdmin/Category/Category.jsx'
 import SuperAdminDashboard from "./Components/SuperAdmin/Dashbaord/Dashboard";
-import SuperAdminManagePrincipals from "./Components/SuperAdmin/ManagePrincipals/ManagePrincipals";
-import SuperAdminManageStudents from "./Components/SuperAdmin/ManageStudents/ManageStudents";
-import SuperAdminManageTeachers from "./Components/SuperAdmin/ManageTeachers/ManageTeachers";
 import SuperAdminNotifications from "./Components/SuperAdmin/Notifications/Notifications";
 import SuperAdminRegistrations from "./Components/SuperAdmin/Registrations/Registrations";
 import SuperAdminReports from "./Components/SuperAdmin/Reports/Reports";
@@ -38,6 +36,7 @@ import TeacherReports from "./Components/Teacher/Reports/Reports";
 import TeacherSettings from "./Components/Teacher/Settings/Settings";
 import TeacherUploadLessonsPlans from "./Components/Teacher/UploadLessonsPlans/UploadLessonsPlans";
 import TeacherCourses from "./Components/Coordinator/Courses/Courses";
+import Attendance from "./Components/Coordinator/Attendance/Attendance.jsx";
 
 
 import Help from './Components/Common/Help/Help'
@@ -54,9 +53,7 @@ function App() {
         {/* Nest all superadmin routes under this layout */}
         <Route path="/superadmin" element={<SuperAdminLayout />}>
           <Route path="dashboard" element={<SuperAdminDashboard />} />
-          <Route path="manageprincipals" element={<SuperAdminManagePrincipals />} />
-          <Route path="managestudents" element={<SuperAdminManageStudents />} />
-          <Route path="manageteachers" element={<SuperAdminManageTeachers />} />
+          <Route path="category" element={<SuperAdminCategory />} />
           <Route path="notifications" element={<SuperAdminNotifications />} />
           <Route path="registrations" element={<SuperAdminRegistrations />} />
           <Route path="reports" element={<SuperAdminReports />} />
@@ -90,6 +87,7 @@ function App() {
           <Route path="settings" element={<TeacherSettings />} />
           <Route path="uploadlessonsplans" element={<TeacherUploadLessonsPlans />} />
           <Route path="courses" element={<TeacherCourses />} />
+          <Route path="attendance" element={<Attendance />} />
           <Route path="help" element={<Help />} />
         </Route>
       </Routes>

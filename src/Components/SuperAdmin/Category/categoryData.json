@@ -1,0 +1,49 @@
+
+{
+  "institutes": [
+    {
+      "name": "Alpha Institute",
+      "city": "Lahore",
+      "students": 200,
+      "teachers": 15,
+      "principal": {
+        "name": "Dr. Ayesha Khan",
+        "email": "ayesha@alphainst.edu.pk",
+        "phone": "0321-1234567",
+        "image": "https://via.placeholder.com/120"
+      },
+      "courses": [
+        {
+          "name": "Biology",
+          "students": ["Ahmed Raza", "Sara Ali", "Usman Iqbal", "Nida Hussain"]
+        },
+        {
+          "name": "Mathematics",
+          "students": ["Fatima Tariq", "Adeel Ahmad", "Hassan Riaz"]
+        }
+      ]
+    },
+    {
+      "name": "Beta College",
+      "city": "Karachi",
+      "students": 150,
+      "teachers": 12,
+      "principal": {
+        "name": "Prof. Waleed Butt",
+        "email": "waleed@betacollege.pk",
+        "phone": "0300-9876543",
+        "image": "https://via.placeholder.com/120"
+      },
+      "courses": [
+        {
+          "name": "Physics",
+          "students": ["Zain Shah", "Hira Noor", "Bilal Hanif"]
+        },
+        {
+          "name": "Chemistry",
+          "students": ["Mahnoor Raza", "Tariq Jameel"]
+        }
+      ]
+    }
+  ]
+}

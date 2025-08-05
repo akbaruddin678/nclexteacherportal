@@ -1,6 +1,4 @@
-// src/Components/Layout/TeacherHeader.jsx
-
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './Header.css';
 import { FiBell, FiUser, FiMenu } from 'react-icons/fi';
 import { useNavigate, Link } from 'react-router-dom';
@@ -15,11 +13,28 @@ const navItems = [
 
 const TeacherHeader = ({ onToggleSidebar }) => {
   const location = window.location.pathname;
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        setShowModal(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    setShowModal(false);
+    navigate("/");
+  };
 
   return (
     <header className="header">
       <div className="header-left">
-        {/* Hamburger for mobile */}
         <button className="hamburger-btn" onClick={onToggleSidebar}>
           <FiMenu size={24} />
         </button>
@@ -33,7 +48,6 @@ const TeacherHeader = ({ onToggleSidebar }) => {
       </div>
 
       <div className="header-right">
-        {/* Nav links hidden on small screens via CSS */}
         <nav className="nav-links">
           {navItems.map((item) => (
             <Link
@@ -45,13 +59,52 @@ const TeacherHeader = ({ onToggleSidebar }) => {
             </Link>
           ))}
         </nav>
+
         <button className="icon-button notification-btn" aria-label="Notifications">
           <FiBell size={20} />
           <span className="badge">3</span>
         </button>
-        <button className="icon-button avatar-btn" aria-label="Profile">
-          <FiUser size={24} />
-        </button>
+
+        <div className="profile-container">
+          <button
+            className="icon-button avatar-btn"
+            aria-label="Profile"
+            onClick={() => setShowModal(!showModal)}
+          >
+            <FiUser size={24} />
+          </button>
+
+          {showModal && (
+            <div className="profile-modal" ref={modalRef}>
+              <div className="user-info">
+                <strong>Maietry</strong>
+                <span>Teacher</span>
+              </div>
+
+              <button
+                className="modal-btn"
+                onClick={() => {
+                  setShowModal(false);
+                  navigate("/profile");
+                }}
+              >
+                View Profile
+              </button>
+
+              <button
+                className="modal-btn"
+                onClick={() => navigate("/teacher/settings")}
+              >
+                Account Settings
+              </button>
+
+              <hr className="modal-divider" />
+              <button className="modal-btn logout" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

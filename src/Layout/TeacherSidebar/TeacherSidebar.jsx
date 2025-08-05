@@ -2,7 +2,7 @@
 import "./Sidebar.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  MdHome, MdSchool, MdPeople, MdPerson, MdAssignment,
+  MdHome, MdHowToReg , MdPeople, MdPerson, MdAssignment,
   MdLibraryBooks, MdNotifications, MdBarChart, MdSettings, MdMenuBook , MdHelp
 } from "react-icons/md";
 
@@ -20,6 +20,7 @@ const TeacherSidebar= ({ isOpen, setIsOpen }) => {
     { id: "/teacher/notifications", label: "Notifications", icon: <MdNotifications /> },
     { id: "/teacher/reports", label: "Reports", icon: <MdBarChart /> },
     { id: "/teacher/settings", label: "Settings", icon: <MdSettings /> },
+    { id: "/teacher/attendance", label: "Attendance", icon: <MdHowToReg  /> },
   ];
 
   return (
