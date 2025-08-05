@@ -1,5 +1,3 @@
-// Updated Courses.jsx with program-wise structure and improved data model
-
 import React, { useState } from 'react';
 import './Courses.css';
 import { MdSearch } from 'react-icons/md';
@@ -11,16 +9,12 @@ const CoursesOffered = () => {
       subjects: [
         {
           name: 'Mathematics 101',
-          description: 'Introduction to basic mathematical concepts.',
           teacher: 'Mr. Thompson',
-          students: 35,
           schedule: 'Mon, Wed, Fri 9:00 AM – 10:00 AM',
         },
         {
           name: 'Computer Science Basics',
-          description: 'Intro to programming and computer principles.',
           teacher: 'Ms. Foster',
-          students: 25,
           schedule: 'Mon, Wed, Fri 11:00 AM – 1:00 PM',
         },
       ],
@@ -30,16 +24,12 @@ const CoursesOffered = () => {
       subjects: [
         {
           name: 'English Literature',
-          description: 'A survey of classic English literature.',
           teacher: '',
-          students: 28,
           schedule: 'Mon, Wed, Fri 11:00 AM – 1:00 PM',
         },
         {
           name: 'History of Civilization',
-          description: 'Overview of world history from ancient times.',
           teacher: '',
-          students: 30,
           schedule: 'Mon, Wed, Fri 9:00 AM – 10:00 AM',
         },
       ],
@@ -49,9 +39,7 @@ const CoursesOffered = () => {
       subjects: [
         {
           name: 'Science Fundamentals',
-          description: 'Physics, chemistry, and biology fundamentals.',
           teacher: 'Dr. Evans',
-          students: 42,
           schedule: 'Mon, Wed, Fri 1:00 PM – 3:00 PM',
         },
       ],
@@ -63,9 +51,7 @@ const CoursesOffered = () => {
   const [newCourse, setNewCourse] = useState({
     program: 'InterTech',
     name: '',
-    description: '',
     teacher: '',
-    students: '',
     schedule: '',
   });
 
@@ -86,9 +72,7 @@ const CoursesOffered = () => {
             ...p.subjects,
             {
               name: newCourse.name,
-              description: newCourse.description,
               teacher: newCourse.teacher,
-              students: parseInt(newCourse.students),
               schedule: newCourse.schedule,
             },
           ],
@@ -98,7 +82,7 @@ const CoursesOffered = () => {
     });
 
     setPrograms(updatedPrograms);
-    setNewCourse({ program: 'InterTech', name: '', description: '', teacher: '', students: '', schedule: '' });
+    setNewCourse({ program: 'InterTech', name: '', teacher: '', schedule: '' });
     setShowModal(false);
   };
 
@@ -123,9 +107,7 @@ const CoursesOffered = () => {
           <thead>
             <tr>
               <th>Course Name</th>
-              <th>Description</th>
               <th>Assigned Teacher</th>
-              <th>Enrolled Students</th>
               <th>Schedule</th>
             </tr>
           </thead>
@@ -133,9 +115,7 @@ const CoursesOffered = () => {
             {programs.find((p) => p.name === selectedProgram)?.subjects.map((subject, idx) => (
               <tr key={idx}>
                 <td>{subject.name}</td>
-                <td>{subject.description}</td>
                 <td>{subject.teacher || '-'}</td>
-                <td>{subject.students}</td>
                 <td>{subject.schedule}</td>
               </tr>
             ))}
@@ -156,9 +136,7 @@ const CoursesOffered = () => {
               </select>
               <input type="text" name="name" placeholder="Course Name" value={newCourse.name} onChange={handleChange} required />
               <input type="text" name="teacher" placeholder="Assigned Teacher" value={newCourse.teacher} onChange={handleChange} />
-              <input type="number" name="students" placeholder="Enrolled Students" value={newCourse.students} onChange={handleChange} required />
               <input type="text" name="schedule" placeholder="Schedule (e.g. Mon, Wed, 9AM–11AM)" value={newCourse.schedule} onChange={handleChange} required />
-              <textarea name="description" placeholder="Course Description" value={newCourse.description} onChange={handleChange} required />
               <div className="modal-actions">
                 <button type="submit">Add</button>
                 <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
