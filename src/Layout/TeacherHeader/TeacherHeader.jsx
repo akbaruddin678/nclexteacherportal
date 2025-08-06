@@ -3,16 +3,16 @@ import './Header.css';
 import { FiBell, FiUser, FiMenu } from 'react-icons/fi';
 import { useNavigate, Link } from 'react-router-dom';
 
-const navItems = [
-  { id: "/teacher/dashboard", label: "Dashboard" },
-  { id: "/teacher/managestudents", label: "Students" },
-  { id: "/teacher/courses", label: "Courses" },
-  { id: "/teacher/reports", label: "Report" },
-  { id: "/teacher/settings", label: "Settings" },
-];
+// const navItems = [
+//   { id: "/teacher/dashboard", label: "Dashboard" },
+//   { id: "/teacher/managestudents", label: "Students" },
+//   { id: "/teacher/courses", label: "Courses" },
+//   { id: "/teacher/reports", label: "Report" },
+//   { id: "/teacher/settings", label: "Settings" },
+// ];
 
 const TeacherHeader = ({ onToggleSidebar }) => {
-  const location = window.location.pathname;
+  // const location = window.location.pathname;
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
@@ -48,7 +48,7 @@ const TeacherHeader = ({ onToggleSidebar }) => {
       </div>
 
       <div className="header-right">
-        <nav className="nav-links">
+        {/* <nav className="nav-links">
           {navItems.map((item) => (
             <Link
               key={item.id}
@@ -58,7 +58,7 @@ const TeacherHeader = ({ onToggleSidebar }) => {
               {item.label}
             </Link>
           ))}
-        </nav>
+        </nav> */}
 
         <button className="icon-button notification-btn" aria-label="Notifications">
           <FiBell size={20} />

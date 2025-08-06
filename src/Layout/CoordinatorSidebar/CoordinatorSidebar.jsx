@@ -2,7 +2,7 @@
 import "./Sidebar.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  MdHome, MdSchool, MdPeople, MdPerson, MdAssignment,
+  MdHome, MdSchool, MdCategory, MdPerson, MdAssignment,
   MdLibraryBooks, MdNotifications, MdBarChart, MdSettings, MdMenuBook , MdHelp
 } from "react-icons/md";
 
@@ -13,8 +13,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   const menuItems = [
     { id: "/coordinator/dashboard", label: "Dashboard", icon: <MdHome /> },
-    { id: "/coordinator/manageteachers", label: "Teachers", icon: <MdSchool /> },
-    { id: "/coordinator/managestudents", label: "Students", icon: <MdPeople /> },
+    { id: "/coordinator/category", label: "Category", icon: <MdCategory /> },
     { id: "/coordinator/registrations", label: "Registrations", icon: <MdAssignment /> },
     { id: "/coordinator/courses", label: "Courses", icon: <MdMenuBook  /> },
     { id: "/coordinator/uploadlessonsplans", label: "Lesson Plans", icon: <MdLibraryBooks /> },

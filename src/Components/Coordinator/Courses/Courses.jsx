@@ -1,47 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Courses.css';
-import { MdSearch } from 'react-icons/md';
+import coursesData from '../../SuperAdmin/Courses/Courses.json';  // Adjust the path if necessary
 
 const CoursesOffered = () => {
-  const [courses, setCourses] = useState([
-    {
-      name: 'Mathematics 101',
-      description: 'Introduction to basic mathematical concepts.',
-      teacher: 'Mr. Thompson',
-      students: 35,
-      schedule: 'Mon, Wed, Fri 9:00 AM – 10:00 AM',
-    },
-    {
-      name: 'English Literature',
-      description: 'A survey of classic English literature.',
-      teacher: '',
-      students: 28,
-      schedule: 'Mon, Wed, Fri 11:00 AM – 1:00 PM',
-    },
-    {
-      name: 'Science Fundamentals',
-      description: 'Fundamentals of physics, chemistry, and biology.',
-      teacher: 'Dr. Evans',
-      students: 42,
-      schedule: 'Mon, Wed, Fri 1:00 PM – 3:00 PM',
-    },
-    {
-      name: 'History of Civilization',
-      description: 'An overview of world history from ancient times to the present.',
-      teacher: '',
-      students: 30,
-      schedule: 'Mon, Wed, Fri 9:00 AM – 10:00 AM',
-    },
-    {
-      name: 'Computer Science Basics',
-      description: 'Introduction to programming and computer science principles.',
-      teacher: 'Ms. Foster',
-      students: 25,
-      schedule: 'Mon, Wed, Fri 11:00 AM – 1:00 PM',
-    },
-  ]);
-
+  const [cities, setCities] = useState([]); // Stores the list of cities and campus data
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedCampus, setSelectedCampus] = useState('');
+  const [selectedProgram, setSelectedProgram] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const [newCourse, setNewCourse] = useState({
+    city: '',
+    campus: '',
+    program: '',
     name: '',
     description: '',
     teacher: '',
@@ -49,7 +19,17 @@ const CoursesOffered = () => {
     schedule: '',
   });
 
-  const [showModal, setShowModal] = useState(false);
+  useEffect(() => {
+    // Ensure categoryData is an array and has data
+    if (Array.isArray(coursesData) && coursesData.length > 0) {
+      setCities(coursesData);  // Load the city data
+      setSelectedCity(coursesData[0]?.name || '');
+      setSelectedCampus(coursesData[0]?.campuses[0]?.name || '');
+      setSelectedProgram(coursesData[0]?.campuses[0]?.programs[0]?.name || '');
+    } else {
+      console.error('Invalid courses data format', coursesData);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,31 +38,115 @@ const CoursesOffered = () => {
 
   const handleAddCourse = (e) => {
     e.preventDefault();
-    if (!newCourse.name || !newCourse.description || !newCourse.schedule || !newCourse.students) {
-      alert("Please fill in all required fields.");
-      return;
-    }
 
-    setCourses([...courses, { ...newCourse, students: parseInt(newCourse.students) }]);
-    setNewCourse({ name: '', description: '', teacher: '', students: '', schedule: '' });
-    setShowModal(false);
+    if (Array.isArray(cities)) {
+      const updatedCities = cities.map((city) => {
+        if (city.name === newCourse.city) {
+          return {
+            ...city,
+            campuses: city.campuses.map((campus) => {
+              if (campus.name === newCourse.campus) {
+                return {
+                  ...campus,
+                  programs: campus.programs.map((program) => {
+                    if (program.name === newCourse.program) {
+                      return {
+                        ...program,
+                        courses: [
+                          ...program.courses,
+                          {
+                            name: newCourse.name,
+                            description: newCourse.description,
+                            teacher: newCourse.teacher,
+                            students: parseInt(newCourse.students),
+                            schedule: newCourse.schedule,
+                          },
+                        ],
+                      };
+                    }
+                    return program;
+                  }),
+                };
+              }
+              return campus;
+            }),
+          };
+        }
+        return city;
+      });
+
+      setCities(updatedCities);
+      setNewCourse({
+        city: '',
+        campus: '',
+        program: '',
+        name: '',
+        description: '',
+        teacher: '',
+        students: '',
+        schedule: '',
+      });
+      setShowModal(false);
+    } else {
+      console.error("cities is not an array:", cities);
+    }
   };
+
+  // Find selected city, campus, and program
+  const selectedCityData = cities.find((city) => city.name === selectedCity);
+  const selectedCampusData = selectedCityData?.campuses.find(
+    (campus) => campus.name === selectedCampus
+  );
+  const selectedProgramData = selectedCampusData?.programs.find(
+    (program) => program.name === selectedProgram
+  );
+
+  // Debugging: Log the current selected city, campus, and program data
+  console.log('Selected City Data:', selectedCityData);
+  console.log('Selected Campus Data:', selectedCampusData);
+  console.log('Selected Program Data:', selectedProgramData);
+
+  if (!selectedCityData || !selectedCampusData || !selectedProgramData) {
+    return <div>Loading...</div>;  // Ensure loading state while data is being fetched
+  }
 
   return (
     <div className="courses-container">
       <div className="courses-header">
-        <h2>Courses Offered</h2>
+        <h2>Program Course Overview</h2>
         <button className="add-course-button" onClick={() => setShowModal(true)}>
           + Add New
         </button>
       </div>
 
       <div className="sub-header">
-        <a href="#" className="manage-link">Manage courses offering</a>
-        <div className="search-bar">
-          <MdSearch className="search-icon" />
-          <input type="text" placeholder="Search" />
-        </div>
+        <a href="#" className="manage-link">
+          Manage course offering
+        </a>
+        {/* City Selection */}
+        <select onChange={(e) => setSelectedCity(e.target.value)} value={selectedCity}>
+          {cities.map((city, idx) => (
+            <option key={idx} value={city.name}>
+              {city.name}
+            </option>
+          ))}
+        </select>
+        {/* Campus Selection */}
+        <select onChange={(e) => setSelectedCampus(e.target.value)} value={selectedCampus}>
+          {selectedCityData?.campuses.map((campus, idx) => (
+            <option key={idx} value={campus.name}>
+              {campus.name}
+            </option>
+          ))}
+        </select>
+        {/* Program Selection */}
+        <select onChange={(e) => setSelectedProgram(e.target.value)} value={selectedProgram}>
+          {selectedCampusData?.programs.map((program, idx) => (
+            <option key={idx} value={program.name}>
+              {program.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="courses-table">
@@ -97,11 +161,11 @@ const CoursesOffered = () => {
             </tr>
           </thead>
           <tbody>
-            {courses.map((course, index) => (
-              <tr key={index}>
+            {selectedProgramData?.courses.map((course, idx) => (
+              <tr key={idx}>
                 <td>{course.name}</td>
                 <td>{course.description}</td>
-                <td>{course.teacher || '-'}</td>
+                <td>{course.teacher}</td>
                 <td>{course.students}</td>
                 <td>{course.schedule}</td>
               </tr>
@@ -110,20 +174,76 @@ const CoursesOffered = () => {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Modal for Adding New Course */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
             <h3>Add New Course</h3>
             <form onSubmit={handleAddCourse}>
-              <input type="text" name="name" placeholder="Course Name" value={newCourse.name} onChange={handleChange} required />
-              <input type="text" name="teacher" placeholder="Assigned Teacher" value={newCourse.teacher} onChange={handleChange} />
-              <input type="number" name="students" placeholder="Enrolled Students" value={newCourse.students} onChange={handleChange} required />
-              <input type="text" name="schedule" placeholder="Schedule (e.g. Mon, Wed, 9AM–11AM)" value={newCourse.schedule} onChange={handleChange} required />
-              <textarea name="description" placeholder="Course Description" value={newCourse.description} onChange={handleChange} required />
+              <select name="city" value={newCourse.city} onChange={handleChange} required>
+                {cities.map((city, idx) => (
+                  <option key={idx} value={city.name}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+              <select name="campus" value={newCourse.campus} onChange={handleChange} required>
+                {selectedCityData?.campuses.map((campus, idx) => (
+                  <option key={idx} value={campus.name}>
+                    {campus.name}
+                  </option>
+                ))}
+              </select>
+              <select name="program" value={newCourse.program} onChange={handleChange} required>
+                {selectedCampusData?.programs.map((program, idx) => (
+                  <option key={idx} value={program.name}>
+                    {program.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                name="name"
+                placeholder="Course Name"
+                value={newCourse.name}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="text"
+                name="teacher"
+                placeholder="Assigned Teacher"
+                value={newCourse.teacher}
+                onChange={handleChange}
+              />
+              <input
+                type="number"
+                name="students"
+                placeholder="Enrolled Students"
+                value={newCourse.students}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="text"
+                name="schedule"
+                placeholder="Schedule (e.g. Mon, Wed, 9AM–11AM)"
+                value={newCourse.schedule}
+                onChange={handleChange}
+                required
+              />
+              <textarea
+                name="description"
+                placeholder="Course Description"
+                value={newCourse.description}
+                onChange={handleChange}
+                required
+              />
               <div className="modal-actions">
                 <button type="submit">Add</button>
-                <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
+                <button type="button" onClick={() => setShowModal(false)}>
+                  Cancel
+                </button>
               </div>
             </form>
           </div>

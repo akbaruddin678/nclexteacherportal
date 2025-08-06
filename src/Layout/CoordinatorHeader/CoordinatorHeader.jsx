@@ -3,16 +3,16 @@ import "./Header.css";
 import { FiBell, FiUser, FiMenu } from "react-icons/fi";
 import { useNavigate, Link } from "react-router-dom";
 
-const navItems = [
-  { id: "/coordinator/dashboard", label: "Dashboard" },
-  { id: "/coordinator/manageteachers", label: "Teachers" },
-  { id: "/coordinator/managestudents", label: "Students" },
-  { id: "/coordinator/courses", label: "Courses" },
-  { id: "/coordinator/settings", label: "Settings" },
-];
+// const navItems = [
+//   { id: "/coordinator/dashboard", label: "Dashboard" },
+//   { id: "/coordinator/manageteachers", label: "Teachers" },
+//   { id: "/coordinator/managestudents", label: "Students" },
+//   { id: "/coordinator/courses", label: "Courses" },
+//   { id: "/coordinator/settings", label: "Settings" },
+// ];
 
 const CoordinatorHeader = ({ onToggleSidebar }) => {
-  const location = window.location.pathname;
+  // const location = window.location.pathname;
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
@@ -51,7 +51,7 @@ const CoordinatorHeader = ({ onToggleSidebar }) => {
       </div>
 
       <div className="header-right">
-        <nav className="nav-links">
+        {/* <nav className="nav-links">
           {navItems.map((item) => (
             <Link
               key={item.id}
@@ -61,7 +61,7 @@ const CoordinatorHeader = ({ onToggleSidebar }) => {
               {item.label}
             </Link>
           ))}
-        </nav>
+        </nav> */}
 
         <button
           className="icon-button notification-btn"

@@ -1,136 +1,144 @@
-"use client"
+import React, { useState, useEffect } from 'react';
+import './UploadLessonsPlans.css';
+import lessonPlansData from '../../SuperAdmin/UploadLessonsPlans/lessonPlans.json';
 
-import { useState, useEffect } from "react"
-import "./UploadLessonsPlans.css"
+const UploadLessonsPlans = () => {
+  const [lessonPlans, setLessonPlans] = useState([]);
+  const [formData, setFormData] = useState({
+    city: 'Islamabad',
+    institute: '',
+    program: 'InterTech',
+    week: 'Week 1',
+    course: '',
+    teacher: '',
+    title: '',
+    objectives: '',
+    file: null,
+  });
 
-const UploadLessonPlans = () => {
-  const [lessonPlans, setLessonPlans] = useState([])
+  const teachers = ['Ms. Foster', 'Mr. Thompson', 'Dr. Evans'];
+  const courses = ['Computer Science Basics', 'Mathematics 101', 'Science Fundamentals', 'English Literature'];
+  const cities = ['Islamabad', 'Lahore', 'Karachi'];
+  const institutes = {
+    Islamabad: ['NEI Main Campus', 'Islamabad Science Academy'],
+    Lahore: ['Lahore Allied Campus', 'Punjab Knowledge Center'],
+    Karachi: ['Karachi Tech Campus', 'City Academy'],
+  };
 
   useEffect(() => {
-    loadLessonPlans()
-  }, [])
+    setLessonPlans(lessonPlansData);
+  }, []);
 
-  const loadLessonPlans = () => {
-    const savedPlans = localStorage.getItem("lessonPlans")
-    if (savedPlans) {
-      setLessonPlans(JSON.parse(savedPlans))
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'file') {
+      setFormData((prev) => ({ ...prev, file: files[0] }));
     } else {
-      // Initialize with default weeks
-      const defaultPlans = [
-        { id: 1, week: 1, title: "", description: "", file: null },
-        { id: 2, week: 2, title: "", description: "", file: null },
-        { id: 3, week: 3, title: "", description: "", file: null },
-      ]
-      setLessonPlans(defaultPlans)
-      localStorage.setItem("lessonPlans", JSON.stringify(defaultPlans))
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  }
+  };
 
-  const saveLessonPlans = (updatedPlans) => {
-    localStorage.setItem("lessonPlans", JSON.stringify(updatedPlans))
-    setLessonPlans(updatedPlans)
-  }
-
-  const handleInputChange = (id, field, value) => {
-    const updatedPlans = lessonPlans.map((plan) => (plan.id === id ? { ...plan, [field]: value } : plan))
-    saveLessonPlans(updatedPlans)
-  }
-
-  const handleFileUpload = (id, file) => {
-    const updatedPlans = lessonPlans.map((plan) => (plan.id === id ? { ...plan, file: file.name } : plan))
-    saveLessonPlans(updatedPlans)
-  }
-
-  const handleDragOver = (e) => {
-    e.preventDefault()
-  }
-
-  const handleDrop = (e, id) => {
-    e.preventDefault()
-    const files = e.dataTransfer.files
-    if (files.length > 0) {
-      handleFileUpload(id, files[0])
-    }
-  }
-
-  const addWeek = () => {
-    const newWeek = {
-      id: Date.now(),
-      week: lessonPlans.length + 1,
-      title: "",
-      description: "",
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newPlan = {
+      id: `LP${Date.now()}`,
+      ...formData,
+      uploadDate: new Date().toISOString().slice(0, 10),
+      file: formData.file?.name || '',
+    };
+    setLessonPlans((prev) => [...prev, newPlan]);
+    setFormData({
+      city: 'Islamabad',
+      institute: '',
+      program: 'InterTech',
+      week: 'Week 1',
+      course: '',
+      teacher: '',
+      title: '',
+      objectives: '',
       file: null,
-    }
-    const updatedPlans = [...lessonPlans, newWeek]
-    saveLessonPlans(updatedPlans)
-  }
+    });
+  };
+
+  const groupedByWeek = lessonPlans.reduce((acc, plan) => {
+    acc[plan.week] = acc[plan.week] || [];
+    acc[plan.week].push(plan);
+    return acc;
+  }, {});
 
   return (
-    <div className="upload-lesson-plans">
-      <div className="page-header">
-        <h1>Upload Lesson Plans</h1>
-        <button className="add-week-btn" onClick={addWeek}>
-          Add Week
-        </button>
-      </div>
+    <div className="lesson-plans">
+      <h2>Teacher Lesson Plans</h2>
 
-      <div className="lesson-plans-container">
-        {lessonPlans.map((plan) => (
-          <div key={plan.id} className="week-section">
-            <h2>Week {plan.week}</h2>
+      <form className="lesson-form" onSubmit={handleSubmit}>
+        <select name="city" value={formData.city} onChange={handleChange} required>
+          {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select name="institute" value={formData.institute} onChange={handleChange} required>
+          <option value="">Select Institute</option>
+          {institutes[formData.city]?.map((inst) => <option key={inst}>{inst}</option>)}
+        </select>
+        <select name="program" value={formData.program} onChange={handleChange} required>
+          <option value="InterTech">InterTech</option>
+          <option value="Matric Tech">Matric Tech</option>
+          <option value="Medical Tech">Medical Tech</option>
+        </select>
+        <select name="week" value={formData.week} onChange={handleChange} required>
+          {[...Array(16)].map((_, i) => (
+            <option key={i}>Week {i + 1}</option>
+          ))}
+        </select>
+        <select name="course" value={formData.course} onChange={handleChange} required>
+          <option value="">Select Course</option>
+          {courses.map((c) => <option key={c}>{c}</option>)}
+        </select>
+        <select name="teacher" value={formData.teacher} onChange={handleChange} required>
+          <option value="">Select Teacher</option>
+          {teachers.map((t) => <option key={t}>{t}</option>)}
+        </select>
+        <input type="text" name="title" placeholder="Lesson Title" value={formData.title} onChange={handleChange} required />
+        <textarea name="objectives" placeholder="Lesson Objectives" value={formData.objectives} onChange={handleChange} required />
+        <input type="file" name="file" onChange={handleChange} accept=".pdf,.doc,.docx" />
+        <button type="submit">Upload</button>
+      </form>
 
-            <div className="form-group">
-              <label>Lesson Plan Title</label>
-              <input
-                type="text"
-                placeholder="Enter lesson plan title"
-                value={plan.title}
-                onChange={(e) => handleInputChange(plan.id, "title", e.target.value)}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Description</label>
-              <textarea
-                placeholder="Enter lesson description"
-                value={plan.description}
-                onChange={(e) => handleInputChange(plan.id, "description", e.target.value)}
-                rows="4"
-              />
-            </div>
-
-            <div className="upload-section">
-              <div className="upload-area" onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, plan.id)}>
-                <div className="upload-content">
-                  <div className="upload-icon">📁</div>
-                  <p>Drag and drop files here, or</p>
-                  <input
-                    type="file"
-                    id={`file-${plan.id}`}
-                    onChange={(e) => e.target.files[0] && handleFileUpload(plan.id, e.target.files[0])}
-                    style={{ display: "none" }}
-                  />
-                  <label htmlFor={`file-${plan.id}`} className="browse-btn">
-                    Browse Files
-                  </label>
-                  {plan.file && (
-                    <div className="uploaded-file">
-                      <span>📄 {plan.file}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <button className="upload-btn">Upload</button>
+      <div className="lesson-plan-list">
+        {Object.keys(groupedByWeek).sort().map((week) => (
+          <div key={week} className="week-section">
+            <h3>{week}</h3>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Teacher</th>
+                    <th>Program</th>
+                    <th>Objectives</th>
+                    <th>File</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {groupedByWeek[week].map((plan) => (
+                    <tr key={plan.id}>
+                      <td>{plan.title}</td>
+                      <td>{plan.course}</td>
+                      <td>{plan.teacher}</td>
+                      <td>{plan.program}</td>
+                      <td>{plan.objectives}</td>
+                      <td>{plan.file}</td>
+                      <td>{plan.uploadDate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         ))}
       </div>
-
-      <div className="save-section">
-        <button className="save-all-btn">Save All Lesson Plans</button>
-      </div>
     </div>
-  )
-}
+  );
+};
 
-export default UploadLessonPlans
+export default UploadLessonsPlans;

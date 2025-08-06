@@ -18,6 +18,7 @@ import SuperAdminCourses from "./Components/SuperAdmin/Courses/Courses";
 
 import CoordinatorLayout from "./Layout/CoordinatorLayout";
 import CoordinatorDashboard from "./Components/Coordinator/Dashbaord/Dashboard";
+import CoordinatorCategory from './Components/Coordinator/Category/Category.jsx'
 import CoordinatorManageStudents from "./Components/Coordinator/ManageStudents/ManageStudents";
 import CoordinatorManageTeachers from "./Components/Coordinator/ManageTeachers/ManageTeachers";
 import CoordinatorNotifications from "./Components/Coordinator/Notifications/Notifications";
@@ -29,6 +30,7 @@ import CoordinatorCourses from "./Components/Coordinator/Courses/Courses";
 
 import TeacherLayout from "./Layout/TeacherLayout";
 import TeacherDashboard from "./Components/Teacher/Dashbaord/Dashboard";
+import TeacherCategory from "./Components/Teacher/Category/Category.jsx";
 import TeacherManageStudents from "./Components/Teacher/ManageStudents/ManageStudents";
 import TeacherNotifications from "./Components/Teacher/Notifications/Notifications";
 import TeacherRegistrations from "./Components/Teacher/Registrations/Registrations";
@@ -66,6 +68,7 @@ function App() {
         {/* Nest all coordinator routes under this layout */}
         <Route path="/coordinator" element={<CoordinatorLayout />}>
           <Route path="dashboard" element={<CoordinatorDashboard />} />
+          <Route path="category" element={<CoordinatorCategory />} />
           <Route path="managestudents" element={<CoordinatorManageStudents />} />
           <Route path="manageteachers" element={<CoordinatorManageTeachers />} />
           <Route path="notifications" element={<CoordinatorNotifications />} />
@@ -80,6 +83,7 @@ function App() {
         {/* Nest all teacher routes under this layout */}
         <Route path="/teacher" element={<TeacherLayout />}>
           <Route path="dashboard" element={<TeacherDashboard />} />
+          <Route path="category" element={<TeacherCategory />} />
            <Route path="managestudents" element={<TeacherManageStudents />} />
           <Route path="notifications" element={<TeacherNotifications />} />
           <Route path="registrations" element={<TeacherRegistrations />} />
