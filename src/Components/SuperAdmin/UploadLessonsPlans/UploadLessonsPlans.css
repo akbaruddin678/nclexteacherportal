@@ -110,3 +110,38 @@
     grid-column: span 1;
   }
 }
+
+
+/* Add this to UploadLessonsPlans.css */
+.table-container {
+  overflow-x: auto;  /* Enables horizontal scrolling */
+  -webkit-overflow-scrolling: touch;  /* Smooth scrolling for mobile devices */
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;  /* Ensures the table takes the full width of the container */
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+@media (max-width: 768px) {
+  /* Make the table columns more responsive on smaller screens */
+  table {
+    width: 100%;
+  }
+
+  th, td {
+    font-size: 12px;  /* Smaller font for better readability */
+    padding: 6px;
+  }
+}

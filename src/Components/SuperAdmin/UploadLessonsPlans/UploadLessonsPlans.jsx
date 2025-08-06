@@ -106,32 +106,34 @@ const UploadLessonsPlans = () => {
         {Object.keys(groupedByWeek).sort().map((week) => (
           <div key={week} className="week-section">
             <h3>{week}</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Course</th>
-                  <th>Teacher</th>
-                  <th>Program</th>
-                  <th>Objectives</th>
-                  <th>File</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {groupedByWeek[week].map((plan) => (
-                  <tr key={plan.id}>
-                    <td>{plan.title}</td>
-                    <td>{plan.course}</td>
-                    <td>{plan.teacher}</td>
-                    <td>{plan.program}</td>
-                    <td>{plan.objectives}</td>
-                    <td>{plan.file}</td>
-                    <td>{plan.uploadDate}</td>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Teacher</th>
+                    <th>Program</th>
+                    <th>Objectives</th>
+                    <th>File</th>
+                    <th>Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {groupedByWeek[week].map((plan) => (
+                    <tr key={plan.id}>
+                      <td>{plan.title}</td>
+                      <td>{plan.course}</td>
+                      <td>{plan.teacher}</td>
+                      <td>{plan.program}</td>
+                      <td>{plan.objectives}</td>
+                      <td>{plan.file}</td>
+                      <td>{plan.uploadDate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ))}
       </div>
