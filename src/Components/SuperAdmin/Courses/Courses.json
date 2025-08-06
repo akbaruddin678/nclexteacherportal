@@ -3,7 +3,7 @@
     "name": "Islamabad",
     "campuses": [
       {
-        "name": "NEI Main Campus",
+        "name": "Islamabad Campus 1",
         "programs": [
           {
             "name": "InterTech",
@@ -39,7 +39,24 @@
         ]
       },
       {
-        "name": "Islamabad Science Academy",
+        "name": "Islamabad Campus 2",
+        "programs": [
+          {
+            "name": "Medical Tech",
+            "courses": [
+              {
+                "name": "Science Fundamentals",
+                "description": "Physics, chemistry, and biology fundamentals.",
+                "teacher": "Dr. Evans",
+                "students": 40,
+                "schedule": "Mon, Wed, Fri 10:00 AM – 12:00 PM"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Islamabad Campus 3",
         "programs": [
           {
             "name": "Medical Tech",

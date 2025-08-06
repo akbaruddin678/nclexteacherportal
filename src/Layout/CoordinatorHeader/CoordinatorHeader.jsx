@@ -1,18 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./Header.css";
 import { FiBell, FiUser, FiMenu } from "react-icons/fi";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-// const navItems = [
-//   { id: "/coordinator/dashboard", label: "Dashboard" },
-//   { id: "/coordinator/manageteachers", label: "Teachers" },
-//   { id: "/coordinator/managestudents", label: "Students" },
-//   { id: "/coordinator/courses", label: "Courses" },
-//   { id: "/coordinator/settings", label: "Settings" },
-// ];
-
-const CoordinatorHeader = ({ onToggleSidebar }) => {
-  // const location = window.location.pathname;
+const CoordinatorHeader = ({ campus, onToggleSidebar }) => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef();
@@ -41,28 +32,18 @@ const CoordinatorHeader = ({ onToggleSidebar }) => {
 
         <div className="greeting">
           <h1 className="greeting-title">
-            Hello Maietry{" "}
+            Hello Coordinator{" "}
             <span role="img" aria-label="wave">
               👋
             </span>
           </h1>
-          <p className="greeting-subtitle">Let's learn something new today!</p>
+          <p className="greeting-subtitle">
+            Campus: {campus || "Select a campus"}
+          </p>
         </div>
       </div>
 
       <div className="header-right">
-        {/* <nav className="nav-links">
-          {navItems.map((item) => (
-            <Link
-              key={item.id}
-              to={item.id}
-              className={`nav-link ${location === item.id ? "active" : ""}`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav> */}
-
         <button
           className="icon-button notification-btn"
           aria-label="Notifications"

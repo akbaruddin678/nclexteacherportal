@@ -20,7 +20,7 @@ const UploadLessonsPlans = () => {
   const courses = ['Computer Science Basics', 'Mathematics 101', 'Science Fundamentals', 'English Literature'];
   const cities = ['Islamabad', 'Lahore', 'Karachi'];
   const institutes = {
-    Islamabad: ['NEI Main Campus', 'Islamabad Science Academy'],
+    Islamabad: ['Islamabad Campus 1', 'Islamabad Campus 2'],
     Lahore: ['Lahore Allied Campus', 'Punjab Knowledge Center'],
     Karachi: ['Karachi Tech Campus', 'City Academy'],
   };

@@ -22,10 +22,17 @@ const CoursesOffered = () => {
   useEffect(() => {
     // Ensure categoryData is an array and has data
     if (Array.isArray(coursesData) && coursesData.length > 0) {
-      setCities(coursesData);  // Load the city data
-      setSelectedCity(coursesData[0]?.name || '');
-      setSelectedCampus(coursesData[0]?.campuses[0]?.name || '');
-      setSelectedProgram(coursesData[0]?.campuses[0]?.programs[0]?.name || '');
+      setCities(coursesData); // Load the city data
+
+      // Filter to show only Islamabad city and Islamabad Campus 1
+      const islamabadCity = coursesData.find((city) => city.name === 'Islamabad');
+      setSelectedCity(islamabadCity?.name || '');
+
+      const islamabadCampus = islamabadCity?.campuses.find((campus) => campus.name === 'Islamabad Campus 1');
+      setSelectedCampus(islamabadCampus?.name || '');
+
+      const firstProgram = islamabadCampus?.programs[0]?.name || '';
+      setSelectedProgram(firstProgram);
     } else {
       console.error('Invalid courses data format', coursesData);
     }
@@ -123,21 +130,13 @@ const CoursesOffered = () => {
         <a href="#" className="manage-link">
           Manage course offering
         </a>
-        {/* City Selection */}
+        {/* City Selection - Only show Islamabad */}
         <select onChange={(e) => setSelectedCity(e.target.value)} value={selectedCity}>
-          {cities.map((city, idx) => (
-            <option key={idx} value={city.name}>
-              {city.name}
-            </option>
-          ))}
+          <option value="Islamabad">Islamabad</option>
         </select>
-        {/* Campus Selection */}
+        {/* Campus Selection - Only show Islamabad Campus 1 */}
         <select onChange={(e) => setSelectedCampus(e.target.value)} value={selectedCampus}>
-          {selectedCityData?.campuses.map((campus, idx) => (
-            <option key={idx} value={campus.name}>
-              {campus.name}
-            </option>
-          ))}
+          <option value="Islamabad Campus 1">Islamabad Campus 1</option>
         </select>
         {/* Program Selection */}
         <select onChange={(e) => setSelectedProgram(e.target.value)} value={selectedProgram}>
@@ -181,18 +180,10 @@ const CoursesOffered = () => {
             <h3>Add New Course</h3>
             <form onSubmit={handleAddCourse}>
               <select name="city" value={newCourse.city} onChange={handleChange} required>
-                {cities.map((city, idx) => (
-                  <option key={idx} value={city.name}>
-                    {city.name}
-                  </option>
-                ))}
+                <option value="Islamabad">Islamabad</option>
               </select>
               <select name="campus" value={newCourse.campus} onChange={handleChange} required>
-                {selectedCityData?.campuses.map((campus, idx) => (
-                  <option key={idx} value={campus.name}>
-                    {campus.name}
-                  </option>
-                ))}
+                <option value="Islamabad Campus 1">Islamabad Campus 1</option>
               </select>
               <select name="program" value={newCourse.program} onChange={handleChange} required>
                 {selectedCampusData?.programs.map((program, idx) => (

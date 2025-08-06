@@ -9,8 +9,8 @@ const Registration = ({ initialTab = "teacher" }) => {
     name: "",
     email: "",
     phone: "",
-    city: "",
-    campus: "",
+    city: "Islamabad", // Hardcoded for Islamabad
+    campus: "Islamabad Campus 1", // Default to Islamabad Campus 1
     department: "",
     cnic: "",
     salary: "",
@@ -30,22 +30,17 @@ const Registration = ({ initialTab = "teacher" }) => {
     status: "Active"
   });
 
-  const [cities, setCities] = useState([]);
   const [campuses, setCampuses] = useState([]);
 
   useEffect(() => {
-    // Extract city and campus data from JSON file
-    const cityList = data.cities.map((city) => city.name);
-    setCities(cityList);
-  }, []);
-
-  useEffect(() => {
-    // Update campuses when city is selected
-    const selectedCity = data.cities.find((city) => city.name === formData.city);
-    if (selectedCity) {
-      setCampuses(selectedCity.campuses.map((campus) => campus.name));
+    // Filter to get only the "Islamabad" city and set the campus to "Islamabad Campus 1"
+    const islamabadCity = data.cities.find((city) => city.name === "Islamabad");
+    
+    if (islamabadCity) {
+      // Setting the campus to only "Islamabad Campus 1" in the formData state
+      setCampuses(["Islamabad Campus 1"]);  // Only display "Islamabad Campus 1"
     }
-  }, [formData.city]);
+  }, []);
 
   const generateStudentId = () => `STD${Date.now().toString().slice(-6)}`;
 
@@ -54,8 +49,8 @@ const Registration = ({ initialTab = "teacher" }) => {
       name: "",
       email: "",
       phone: "",
-      city: "",
-      campus: "",
+      city: "Islamabad", // Retaining Islamabad as the default city
+      campus: "Islamabad Campus 1", // Retaining "Islamabad Campus 1" as the default campus
       department: "",
       cnic: "",
       salary: "",
@@ -131,24 +126,14 @@ const Registration = ({ initialTab = "teacher" }) => {
         <div className="form-row">
           <div className="form-group">
             <label>City *</label>
-            <select value={formData.city} onChange={(e) => handleInputChange("city", e.target.value)} required>
-              <option value="">Select City</option>
-              {cities.map((city, idx) => (
-                <option key={idx} value={city}>
-                  {city}
-                </option>
-              ))}
+            <select value={formData.city} onChange={() => {}} disabled>
+              <option value="Islamabad">Islamabad</option>
             </select>
           </div>
           <div className="form-group">
             <label>Campus *</label>
             <select value={formData.campus} onChange={(e) => handleInputChange("campus", e.target.value)} required>
-              <option value="">Select Campus</option>
-              {campuses.map((campus, idx) => (
-                <option key={idx} value={campus}>
-                  {campus}
-                </option>
-              ))}
+              <option value="Islamabad Campus 1">Islamabad Campus 1</option> {/* Only show Islamabad Campus 1 */}
             </select>
           </div>
         </div>

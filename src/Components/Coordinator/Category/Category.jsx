@@ -1,22 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Category.css";
 import data from "../../SuperAdmin/Category/categoryData.json";
 
 const Category = () => {
-  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedCity] = useState("Islamabad"); // Hardcoded for Islamabad
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
 
-  // Get list of cities
-  const cities = data.cities.map((city) => city.name);
+  // Filter data for Islamabad only
+  const islamabadCity = data.cities.find((city) => city.name === "Islamabad");
 
-  // Get campuses in the selected city
-  const campusesInCity = selectedCity
-    ? data.cities.find((city) => city.name === selectedCity)?.campuses || []
-    : [];
+  // Get campuses in Islamabad and filter for Islamabad Campus 1
+  const campusesInCity = islamabadCity ? islamabadCity.campuses.filter(campus => campus.name === "Islamabad Campus 1") : [];
 
-  // Handle campus selection
+  // Automatically set the selected campus to "Islamabad Campus 1" based on logged-in user access
+  useEffect(() => {
+    if (campusesInCity.length > 0) {
+      setSelectedCampus(campusesInCity[0]);
+    }
+  }, [campusesInCity]);
+
+  // Handle campus selection (though it's now filtered to only show "Islamabad Campus 1")
   const handleSelectCampus = (campusName) => {
     const campus = campusesInCity.find((c) => c.name === campusName);
     setSelectedCampus(campus);
@@ -39,26 +44,17 @@ const Category = () => {
 
   return (
     <div className="category-container">
-      <h2 className="title">Explore Programs by City</h2>
+      <h2 className="title">Explore Programs in Islamabad</h2>
 
       {/* Select City */}
       <div className="dropdown-section">
         <label>Select City:</label>
         <select
           value={selectedCity}
-          onChange={(e) => {
-            setSelectedCity(e.target.value);
-            setSelectedCampus(null);
-            setSelectedProgram(null);
-            setSelectedSubject(null);
-          }}
+          onChange={() => {}}
+          disabled
         >
-          <option value="">-- Choose City --</option>
-          {cities.map((city, idx) => (
-            <option key={idx} value={city}>
-              {city}
-            </option>
-          ))}
+          <option value="Islamabad">Islamabad</option>
         </select>
       </div>
 
