@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Category.css";
 import data from "../../SuperAdmin/Category/categoryData.json";
 
 const Category = () => {
-  const [selectedCity, setSelectedCity] = useState("");
+  // Mock logged-in teacher credentials
+  const userRole = "teacher"; // "teacher" or "principal"
+  const userName = "Mr. Thompson"; // Teacher's full name from data
+
+  const [selectedCity] = useState("Islamabad"); // fixed city for teacher
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
 
-  // Get list of cities
-  const cities = data.cities.map((city) => city.name);
-
-  // Get campuses in the selected city
-  const campusesInCity = selectedCity
-    ? data.cities.find((city) => city.name === selectedCity)?.campuses || []
+  // Filter Islamabad city and campus
+  const islamabadCity = data.cities.find((city) => city.name === "Islamabad");
+  const campusesInCity = islamabadCity
+    ? islamabadCity.campuses.filter(campus => campus.name === "Islamabad Campus 1")
     : [];
 
-  // Handle campus selection
+  useEffect(() => {
+    if (campusesInCity.length > 0) {
+      setSelectedCampus(campusesInCity[0]);
+    }
+  }, [campusesInCity]);
+
   const handleSelectCampus = (campusName) => {
     const campus = campusesInCity.find((c) => c.name === campusName);
     setSelectedCampus(campus);
@@ -24,14 +31,19 @@ const Category = () => {
     setSelectedSubject(null);
   };
 
-  // Handle program selection
   const handleSelectProgram = (programName) => {
     const program = selectedCampus?.programs.find((p) => p.name === programName);
-    setSelectedProgram(program);
+    if (!program) return;
+
+    // Filter subjects only for the logged-in teacher
+    const filteredSubjects = userRole === "teacher"
+      ? program.subjects.filter((s) => s.teacher.teacher === userName)
+      : program.subjects;
+
+    setSelectedProgram({ ...program, subjects: filteredSubjects });
     setSelectedSubject(null);
   };
 
-  // Handle subject selection
   const handleSelectSubject = (subjectName) => {
     const subject = selectedProgram?.subjects.find((s) => s.name === subjectName);
     setSelectedSubject(subject);
@@ -39,33 +51,20 @@ const Category = () => {
 
   return (
     <div className="category-container">
-      <h2 className="title">Explore Programs by City</h2>
+      <h2 className="title">Your Assigned Courses</h2>
 
       {/* Select City */}
       <div className="dropdown-section">
-        <label>Select City:</label>
-        <select
-          value={selectedCity}
-          onChange={(e) => {
-            setSelectedCity(e.target.value);
-            setSelectedCampus(null);
-            setSelectedProgram(null);
-            setSelectedSubject(null);
-          }}
-        >
-          <option value="">-- Choose City --</option>
-          {cities.map((city, idx) => (
-            <option key={idx} value={city}>
-              {city}
-            </option>
-          ))}
+        <label>City:</label>
+        <select value={selectedCity} disabled>
+          <option value="Islamabad">Islamabad</option>
         </select>
       </div>
 
       {/* Select Campus */}
       {selectedCity && (
         <div className="panel">
-          <h3 className="section-title">Campuses in {selectedCity}</h3>
+          <h3 className="section-title">Campus</h3>
           <div className="button-grid">
             {campusesInCity.map((campus, idx) => (
               <button
@@ -83,7 +82,7 @@ const Category = () => {
       {/* Select Program */}
       {selectedCampus && (
         <div className="panel">
-          <h3 className="section-title">Programs Offered by {selectedCampus.name}</h3>
+          <h3 className="section-title">Programs Offered</h3>
           <div className="button-grid">
             {selectedCampus.programs.map((prog, idx) => (
               <button
@@ -99,9 +98,9 @@ const Category = () => {
       )}
 
       {/* Select Subject */}
-      {selectedProgram && (
+      {selectedProgram && selectedProgram.subjects.length > 0 ? (
         <div className="panel">
-          <h3 className="section-title">Subjects in {selectedProgram.name}</h3>
+          <h3 className="section-title">Your Subjects in {selectedProgram.name}</h3>
           <div className="button-grid">
             {selectedProgram.subjects.map((subj, idx) => (
               <button
@@ -114,13 +113,18 @@ const Category = () => {
             ))}
           </div>
         </div>
-      )}
+      ) : selectedProgram ? (
+        <p style={{ color: "red", paddingLeft: "1rem" }}>
+          No subjects assigned to you in this program.
+        </p>
+      ) : null}
 
-      {/* Show Teacher & Students */}
+      {/* Show Students */}
       {selectedSubject && (
         <div className="panel">
           <h3 className="section-title">
-            Teacher: {selectedSubject.teacher.teacher} - {selectedSubject.name}
+            Subject: {selectedSubject.name} <br />
+            Teacher: {selectedSubject.teacher.teacher}
           </h3>
           <table className="student-table">
             <thead>
