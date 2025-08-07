@@ -2,7 +2,7 @@
 import "./Sidebar.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  MdHome, MdSchool, MdCategory, MdPerson, MdAssignment,
+  MdHome, MdSchool, MdCategory, MdHowToReg, MdAssignment,
   MdLibraryBooks, MdNotifications, MdBarChart, MdSettings, MdMenuBook , MdHelp
 } from "react-icons/md";
 
@@ -19,6 +19,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { id: "/coordinator/uploadlessonsplans", label: "Lesson Plans", icon: <MdLibraryBooks /> },
     { id: "/coordinator/notifications", label: "Notifications", icon: <MdNotifications /> },
     { id: "/coordinator/reports", label: "Reports", icon: <MdBarChart /> },
+        { id: "/coordinator/attendance", label: "Attendance", icon: <MdHowToReg  /> },
     { id: "/coordinator/settings", label: "Settings", icon: <MdSettings /> },
   ];
 

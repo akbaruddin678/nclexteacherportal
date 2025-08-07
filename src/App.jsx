@@ -18,6 +18,7 @@ import SuperAdminCourses from "./Components/SuperAdmin/Courses/Courses";
 
 import CoordinatorLayout from "./Layout/CoordinatorLayout";
 import CoordinatorDashboard from "./Components/Coordinator/Dashbaord/Dashboard";
+import CoordinatorAttendance from "./Components/Coordinator/Attendance/Attendance.jsx";
 import CoordinatorCategory from './Components/Coordinator/Category/Category.jsx'
 import CoordinatorManageStudents from "./Components/Coordinator/ManageStudents/ManageStudents";
 import CoordinatorManageTeachers from "./Components/Coordinator/ManageTeachers/ManageTeachers";
@@ -37,8 +38,8 @@ import TeacherRegistrations from "./Components/Teacher/Registrations/Registratio
 import TeacherReports from "./Components/Teacher/Reports/Reports";
 import TeacherSettings from "./Components/Teacher/Settings/Settings";
 import TeacherUploadLessonsPlans from "./Components/Teacher/UploadLessonsPlans/UploadLessonsPlans";
-import TeacherCourses from "./Components/Coordinator/Courses/Courses";
-import Attendance from "./Components/Coordinator/Attendance/Attendance.jsx";
+import TeacherCourses from "./Components/Teacher/Courses/Courses.jsx";
+import TeacherAttendance from "./Components/Teacher/Attendance/Attendance.jsx";
 
 
 import Help from './Components/Common/Help/Help'
@@ -68,6 +69,7 @@ function App() {
         {/* Nest all coordinator routes under this layout */}
         <Route path="/coordinator" element={<CoordinatorLayout />}>
           <Route path="dashboard" element={<CoordinatorDashboard />} />
+          <Route path="attendance" element={<CoordinatorAttendance />} />
           <Route path="category" element={<CoordinatorCategory />} />
           <Route path="managestudents" element={<CoordinatorManageStudents />} />
           <Route path="manageteachers" element={<CoordinatorManageTeachers />} />
@@ -84,14 +86,14 @@ function App() {
         <Route path="/teacher" element={<TeacherLayout />}>
           <Route path="dashboard" element={<TeacherDashboard />} />
           <Route path="category" element={<TeacherCategory />} />
-           <Route path="managestudents" element={<TeacherManageStudents />} />
+          <Route path="managestudents" element={<TeacherManageStudents />} />
           <Route path="notifications" element={<TeacherNotifications />} />
           <Route path="registrations" element={<TeacherRegistrations />} />
           <Route path="reports" element={<TeacherReports />} />
           <Route path="settings" element={<TeacherSettings />} />
           <Route path="uploadlessonsplans" element={<TeacherUploadLessonsPlans />} />
           <Route path="courses" element={<TeacherCourses />} />
-          <Route path="attendance" element={<Attendance />} />
+          <Route path="attendance" element={<TeacherAttendance />} />
           <Route path="help" element={<Help />} />
         </Route>
       </Routes>
