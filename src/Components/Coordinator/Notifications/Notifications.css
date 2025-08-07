@@ -1,196 +1,97 @@
-/* Base container */
+/* Notifications.css */
 .notifications {
   max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.07);
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Headings */
 .notifications h1 {
   font-size: 2rem;
-  margin-bottom: 0.5rem;
   color: #2c3e50;
-  border-bottom: 2px solid #3498db;
-  display: inline-block;
-  padding-bottom: 0.3rem;
+  margin-bottom: 1rem;
 }
 
 .notifications h2 {
-  font-size: 1.5rem;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  color: #34495e;
-}
-
-/* Form Section */
-.notification-form-container,
-.message-form-container {
   margin-top: 2rem;
-  background: #fdfdfd;
-  padding: 2rem;
-  border-radius: 12px;
-  border: 1px solid #e1e1e1;
-  transition: box-shadow 0.3s ease-in-out;
+  font-size: 1.5rem;
+  color: #34495e;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.3rem;
 }
 
-.notification-form-container:hover,
-.message-form-container:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-/* Form Elements */
 .form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: block;
-  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 input[type="text"],
-input[type="datetime-local"],
-select,
-textarea {
-  width: 100%;
-  padding: 0.8rem 1rem;
+textarea,
+select {
+  padding: 0.75rem 1rem;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.3s;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #3498db;
-  outline: none;
+textarea {
+  resize: vertical;
+  min-height: 100px;
 }
 
-/* Button */
-.send-btn {
+button[type="submit"] {
   background-color: #3498db;
   color: white;
-  padding: 0.7rem 1.5rem;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.send-btn:hover {
-  background-color: #2c80b4;
-}
-
-/* List Containers */
-.notifications-history,
-.messages-history {
-  margin-top: 2rem;
-}
-
-/* Card Items */
-.notification-item,
-.message-item {
-  background: #ffffff;
-  padding: 1.5rem;
-  border: 1px solid #e2e2e2;
-  margin-bottom: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
-  transition: box-shadow 0.3s ease;
-}
-
-.notification-item:hover,
-.message-item:hover {
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
-}
-
-.notification-header,
-.message-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.notification-header h3,
-.message-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: #2c3e50;
-}
-
-.notification-status,
-.message-status {
-  background-color: #3498db1a;
-  color: #3498db;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.notification-recipient,
-.message-sender,
-.notification-message,
-.message-content,
-.notification-date,
-.message-date {
-  margin: 0.4rem 0;
-  font-size: 0.95rem;
-  color: #555;
-}
-
-.notification-date,
-.message-date {
-  font-size: 0.85rem;
-  color: #888;
-}
-
-/* Mark as Read Button */
-button.mark-read {
-  background-color: #2ecc71;
-  color: white;
-  border: none;
-  padding: 0.4rem 1rem;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: bold;
-  margin-top: 0.6rem;
   cursor: pointer;
+  align-self: flex-start;
+  transition: background-color 0.3s ease;
 }
 
-button.mark-read:hover {
-  background-color: #27ae60;
+button[type="submit"]:hover {
+  background-color: #2980b9;
 }
 
-/* Filter Bar */
-.filters {
-  margin-top: 1.5rem;
+.notifications > div {
+  margin-top: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
   padding: 1rem;
-  background: #eef6fb;
-  border-radius: 10px;
-  border: 1px solid #d6eaf8;
+  border: 1px solid #e1e1e1;
 }
 
-.filters label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.6rem;
+.notifications strong {
+  font-size: 1.1rem;
   color: #2c3e50;
 }
 
-.filters input {
-  width: 100%;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+.notifications p {
+  color: #555;
+  margin: 0.5rem 0;
+}
+
+.notifications small {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin-top: 1rem;
 }

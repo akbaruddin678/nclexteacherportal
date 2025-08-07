@@ -1,26 +1,28 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import "./Notifications.css"
+import { useState, useEffect } from "react";
+import "./Notifications.css";
 
 const Notifications = () => {
   const [formData, setFormData] = useState({
-    recipientType: "admin",
+    recipientType: "",
     subject: "",
     message: "",
     schedule: "",
   });
 
   const [notifications, setNotifications] = useState([]);
+  const [messagesFromTeachers, setMessagesFromTeachers] = useState([]);
+  const [messagesFromPrincipals, setMessagesFromPrincipals] = useState([]);
 
   useEffect(() => {
-    const shared = JSON.parse(localStorage.getItem('sharedNotifications')) || [];
-    const filtered = shared.filter(n =>
-      n.recipientType === 'principals' ||
-      n.recipientType === 'both' ||
-      n.recipientType === 'all'
-    );
-    setNotifications(filtered);
+    const shared = JSON.parse(localStorage.getItem("sharedNotifications")) || [];
+    setNotifications(shared);
+
+    const teacherMsgs = JSON.parse(localStorage.getItem("teacherNotifications")) || [];
+    const principalMsgs = JSON.parse(localStorage.getItem("messagesToAdmin")) || [];
+    setMessagesFromTeachers(teacherMsgs);
+    setMessagesFromPrincipals(principalMsgs);
   }, []);
 
   const handleInputChange = (field, value) => {
@@ -33,37 +35,46 @@ const Notifications = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.subject || !formData.message) {
+    if (!formData.recipientType || !formData.subject || !formData.message) {
       alert("Please fill in all required fields");
       return;
     }
 
-    const newMessage = {
+    const newNotification = {
       id: Date.now(),
       ...formData,
       createdAt: new Date().toISOString(),
       status: "Sent",
-      from: "Principal",
+      from: "Admin",
     };
 
-    const existing = JSON.parse(localStorage.getItem('messagesToAdmin')) || [];
-    localStorage.setItem('messagesToAdmin', JSON.stringify([newMessage, ...existing]));
+    const existing = JSON.parse(localStorage.getItem("sharedNotifications")) || [];
+    localStorage.setItem("sharedNotifications", JSON.stringify([newNotification, ...existing]));
 
-    setFormData({
-      recipientType: "admin",
-      subject: "",
-      message: "",
-      schedule: "",
-    });
-
-    alert("Message sent to admin successfully!");
+    setFormData({ recipientType: "", subject: "", message: "", schedule: "" });
+    alert("Notification sent successfully!");
   };
 
   return (
     <div className="notifications">
-      <h1>Principal Notifications</h1>
+      <h1>Admin Notifications</h1>
 
       <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Recipient</label>
+          <select
+            value={formData.recipientType}
+            onChange={(e) => handleInputChange("recipientType", e.target.value)}
+            required
+          >
+            <option value="">Select recipient</option>
+            <option value="teachers">Teachers</option>
+            <option value="principals">Principals</option>
+            <option value="both">Both</option>
+            <option value="all">All Users</option>
+          </select>
+        </div>
+
         <input
           type="text"
           placeholder="Subject"
@@ -78,15 +89,35 @@ const Notifications = () => {
           rows="4"
           required
         />
-        <button type="submit">Send to Admin</button>
+        <button type="submit">Send Notification</button>
       </form>
 
-      <h2>Notifications for You</h2>
+      <h2>Sent Notifications</h2>
       {notifications.map((n) => (
         <div key={n.id}>
           <strong>{n.subject}</strong>
           <p>{n.message}</p>
           <small>{new Date(n.createdAt).toLocaleString()}</small>
+          <hr />
+        </div>
+      ))}
+
+      <h2>Messages from Teachers</h2>
+      {messagesFromTeachers.map((m) => (
+        <div key={m.id}>
+          <strong>{m.subject}</strong>
+          <p>{m.message}</p>
+          <small>{new Date(m.createdAt).toLocaleString()}</small>
+          <hr />
+        </div>
+      ))}
+
+      <h2>Messages from Principals</h2>
+      {messagesFromPrincipals.map((m) => (
+        <div key={m.id}>
+          <strong>{m.subject}</strong>
+          <p>{m.message}</p>
+          <small>{new Date(m.createdAt).toLocaleString()}</small>
           <hr />
         </div>
       ))}

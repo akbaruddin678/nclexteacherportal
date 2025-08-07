@@ -6,7 +6,7 @@ const UploadLessonsPlans = () => {
   const [lessonPlans, setLessonPlans] = useState([]);
   const [formData, setFormData] = useState({
     city: 'Islamabad',
-    institute: '',
+    institute: 'Islamabad Campus 1',
     program: 'InterTech',
     week: 'Week 1',
     course: '',
@@ -18,15 +18,12 @@ const UploadLessonsPlans = () => {
 
   const teachers = ['Ms. Foster', 'Mr. Thompson', 'Dr. Evans'];
   const courses = ['Computer Science Basics', 'Mathematics 101', 'Science Fundamentals', 'English Literature'];
-  const cities = ['Islamabad', 'Lahore', 'Karachi'];
-  const institutes = {
-    Islamabad: ['NEI Main Campus', 'Islamabad Science Academy'],
-    Lahore: ['Lahore Allied Campus', 'Punjab Knowledge Center'],
-    Karachi: ['Karachi Tech Campus', 'City Academy'],
-  };
 
   useEffect(() => {
-    setLessonPlans(lessonPlansData);
+    const filtered = lessonPlansData.filter(
+      (plan) => plan.city === 'Islamabad' && plan.institute === 'Islamabad Campus 1'
+    );
+    setLessonPlans(filtered);
   }, []);
 
   const handleChange = (e) => {
@@ -49,7 +46,7 @@ const UploadLessonsPlans = () => {
     setLessonPlans((prev) => [...prev, newPlan]);
     setFormData({
       city: 'Islamabad',
-      institute: '',
+      institute: 'Islamabad Campus 1',
       program: 'InterTech',
       week: 'Week 1',
       course: '',
@@ -68,34 +65,34 @@ const UploadLessonsPlans = () => {
 
   return (
     <div className="lesson-plans">
-      <h2>Teacher Lesson Plans</h2>
+      <h2>Upload Lesson Plans - Islamabad Campus 1</h2>
 
       <form className="lesson-form" onSubmit={handleSubmit}>
-        <select name="city" value={formData.city} onChange={handleChange} required>
-          {cities.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
-        <select name="institute" value={formData.institute} onChange={handleChange} required>
-          <option value="">Select Institute</option>
-          {institutes[formData.city]?.map((inst) => <option key={inst}>{inst}</option>)}
-        </select>
+        <input type="text" value="Islamabad" disabled />
+        <input type="text" value="Islamabad Campus 1" disabled />
+
         <select name="program" value={formData.program} onChange={handleChange} required>
           <option value="InterTech">InterTech</option>
           <option value="Matric Tech">Matric Tech</option>
           <option value="Medical Tech">Medical Tech</option>
         </select>
+
         <select name="week" value={formData.week} onChange={handleChange} required>
           {[...Array(16)].map((_, i) => (
             <option key={i}>Week {i + 1}</option>
           ))}
         </select>
+
         <select name="course" value={formData.course} onChange={handleChange} required>
           <option value="">Select Course</option>
           {courses.map((c) => <option key={c}>{c}</option>)}
         </select>
+
         <select name="teacher" value={formData.teacher} onChange={handleChange} required>
           <option value="">Select Teacher</option>
           {teachers.map((t) => <option key={t}>{t}</option>)}
         </select>
+
         <input type="text" name="title" placeholder="Lesson Title" value={formData.title} onChange={handleChange} required />
         <textarea name="objectives" placeholder="Lesson Objectives" value={formData.objectives} onChange={handleChange} required />
         <input type="file" name="file" onChange={handleChange} accept=".pdf,.doc,.docx" />
