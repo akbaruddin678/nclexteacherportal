@@ -1,39 +1,43 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdVisibility, MdVisibilityOff } from 'react-icons/md'; // 👁️ icons
-import './Login.css';
-import illustration from '../../../public/illustration.svg';
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { useAuth } from "../../context/AuthContext";
+import "./Login.css";
+import illustration from "../../../public/illustration.svg";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    let role = null;
-    if (email === 'admin@lms.com' && password === 'admin') {
-      role = 'superadmin';
-    } else if (email === 'coord@lms.com' && password === 'coord') {
-      role = 'coordinator';
-    } else if (email === 'teacher@lms.com' && password === 'teacher') {
-      role = 'teacher';
-    }
-
-    if (role) {
-      navigate(`/${role}/dashboard`);
-    } else {
-      setError('Invalid email or password');
+    try {
+      await login(email, password);
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Login failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-page">
       <div className="login-left">
-        <img src={illustration} alt="Digital Learning" className="illustration" />
+        <img
+          src={illustration}
+          alt="Digital Learning"
+          className="illustration"
+        />
         <h2 className="tagline">Empowering minds through digital learning!</h2>
         <div className="social-icons">
           <i className="fab fa-facebook-f"></i>
@@ -62,7 +66,7 @@ const Login = () => {
             <label>Password</label>
             <div className="password-field">
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter your Password"
                 required
                 value={password}
@@ -72,10 +76,14 @@ const Login = () => {
                 className="toggle-icon"
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
-                  top:"21px"
+                  top: "21px",
                 }}
               >
-                {showPassword ? <MdVisibilityOff size={22} /> : <MdVisibility size={22} />}
+                {showPassword ? (
+                  <MdVisibilityOff size={22} />
+                ) : (
+                  <MdVisibility size={22} />
+                )}
               </span>
             </div>
 

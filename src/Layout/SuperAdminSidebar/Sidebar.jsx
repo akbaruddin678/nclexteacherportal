@@ -12,20 +12,35 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const activeComponent = location.pathname;
 
   const menuItems = [
-    { id: "/superadmin/dashboard", label: "Dashboard", icon: <MdHome /> },
-    { id: "/superadmin/category", label: "Category", icon: <MdCategory /> },
-    { id: "/superadmin/registrations", label: "Registrations", icon: <MdAssignment /> },
-    { id: "/superadmin/courses", label: "Courses", icon: <MdMenuBook  /> },
-    { id: "/superadmin/uploadlessonsplans", label: "Lesson Plans", icon: <MdLibraryBooks /> },
-    { id: "/superadmin/notifications", label: "Notifications", icon: <MdNotifications /> },
-    { id: "/superadmin/reports", label: "Reports", icon: <MdBarChart /> },
-    { id: "/superadmin/settings", label: "Settings", icon: <MdSettings /> },
+    { id: "/admin/dashboard", label: "Dashboard", icon: <MdHome /> },
+    { id: "/admin/category", label: "Category", icon: <MdCategory /> },
+    {
+      id: "/admin/registrations",
+      label: "Registrations",
+      icon: <MdAssignment />,
+    },
+    { id: "/admin/courses", label: "Courses", icon: <MdMenuBook /> },
+    {
+      id: "/admin/uploadlessonsplans",
+      label: "Lesson Plans",
+      icon: <MdLibraryBooks />,
+    },
+    {
+      id: "/admin/notifications",
+      label: "Notifications",
+      icon: <MdNotifications />,
+    },
+    { id: "/admin/reports", label: "Reports", icon: <MdBarChart /> },
+    { id: "/admin/settings", label: "Settings", icon: <MdSettings /> },
   ];
 
   return (
     <div className={`sidebar ${isOpen ? "open" : ""}`}>
       <div className="sidebar-header">
-        <h2 onClick={() => navigate("/superadmin/dashboard")} style={{ cursor: "pointer" }}>
+        <h2
+          onClick={() => navigate("/admin/dashboard")}
+          style={{ cursor: "pointer" }}
+        >
           InterTech LMS
         </h2>
       </div>
@@ -33,7 +48,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         {menuItems.map((item) => (
           <button
             key={item.id}
-            className={`nav-item ${activeComponent === item.id ? "active" : ""}`}
+            className={`nav-item ${
+              activeComponent === item.id ? "active" : ""
+            }`}
             onClick={() => {
               navigate(item.id);
               setIsOpen?.(false); // Close on mobile after navigation
@@ -44,16 +61,20 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </button>
         ))}
       </nav>
-    {/* Bottom item */}
+      {/* Bottom item */}
       <div className="sidebar-footer">
         <button
-          className={`nav-item ${activeComponent === "/superadmin/help" ? "active" : ""}`}
+          className={`nav-item ${
+            activeComponent === "/admin/help" ? "active" : ""
+          }`}
           onClick={() => {
-            navigate("/superadmin/help");
+            navigate("/admin/help");
             setIsOpen?.(false);
           }}
         >
-          <span className="nav-icon"><MdHelp /></span>
+          <span className="nav-icon">
+            <MdHelp />
+          </span>
           <span className="nav-label">Help and Docs</span>
         </button>
       </div>

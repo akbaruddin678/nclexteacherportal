@@ -1,374 +1,376 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import api from "../../../services/api"; // Assuming your API file is in lib folder
 import "./Reports.css";
 
 const Reports = () => {
-  const [activeTab, setActiveTab] = useState("attendance");
-  const [filters, setFilters] = useState({
-    course: "",
-    teacher: "",
-    dateRange: "",
-    city: "",
-    institute: "",
+  // State management
+  const [campuses, setCampuses] = useState([]);
+  const [selectedCampus, setSelectedCampus] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [studentDetails, setStudentDetails] = useState(null);
+  const [loading, setLoading] = useState({
+    campuses: true,
+    students: false,
+    details: false,
   });
-  const [attendanceData, setAttendanceData] = useState([]);
-  const [lectureData, setLectureData] = useState([]);
-  const [selectedClass, setSelectedClass] = useState(null); // Store the selected class
-  const [selectedStudentStatus, setSelectedStudentStatus] = useState(null); // To store student status
+  const [error, setError] = useState(null);
 
+  // Data fetching
   useEffect(() => {
-    loadReportsData();
+    const fetchCampuses = async () => {
+      try {
+        const response = await api.get("/admin/campuses");
+        setCampuses(response.data?.data || []);
+        setLoading((prev) => ({ ...prev, campuses: false }));
+      } catch (err) {
+        setError("Failed to fetch campuses");
+        setLoading((prev) => ({ ...prev, campuses: false }));
+      }
+    };
+
+    fetchCampuses();
   }, []);
 
-  const loadReportsData = () => {
-    const sampleAttendance = [
-      {
-        id: 1,
-        studentName: "Ethan Harper",
-        course: "Introduction to Programming",
-        date: "2024-03-15",
-        status: "Present",
-        teacher: "Dr. Eleanor Harper",
-        city: "Islamabad",
-        institute: "NEI Main Campus",
-      },
-      {
-        id: 2,
-        studentName: "Olivia Bennett",
-        course: "Data Structures and Algorithms",
-        date: "2024-03-15",
-        status: "Absent",
-        teacher: "Dr. Eleanor Harper",
-        city: "Lahore",
-        institute: "Lahore Allied Campus",
-      },
-      {
-        id: 3,
-        studentName: "Noah Carter",
-        course: "Web Development Fundamentals",
-        date: "2024-03-15",
-        status: "Present",
-        teacher: "Ms. Olivia Carter",
-        city: "Karachi",
-        institute: "Karachi Tech Campus",
-      },
-      {
-        id: 4,
-        studentName: "Ava Mitchell",
-        course: "Database Management Systems",
-        date: "2024-03-15",
-        status: "Present",
-        teacher: "Prof. Samuel Bennett",
-        city: "Islamabad",
-        institute: "NEI Main Campus",
-      },
-      {
-        id: 5,
-        studentName: "Liam Foster",
-        course: "Software Engineering Principles",
-        date: "2024-03-15",
-        status: "Present",
-        teacher: "Ms. Olivia Carter",
-        city: "Lahore",
-        institute: "Lahore Allied Campus",
-      },
-    ];
+  useEffect(() => {
+    if (!selectedCampus) return;
 
-    const sampleLectures = [
-      {
-        id: 1,
-        teacherName: "Dr. Eleanor Harper",
-        course: "Data Science Fundamentals",
-        topic: "Introduction to Python",
-        date: "2024-03-15",
-        duration: "2 hours",
-        studentsPresent: 25,
-        totalStudents: 30,
-        city: "Islamabad",
-        institute: "NEI Main Campus",
-      },
-      {
-        id: 2,
-        teacherName: "Prof. Samuel Bennett",
-        course: "Machine Learning Applications",
-        topic: "Linear Regression",
-        date: "2024-03-15",
-        duration: "1.5 hours",
-        studentsPresent: 22,
-        totalStudents: 30,
-        city: "Lahore",
-        institute: "Lahore Allied Campus",
-      },
-      {
-        id: 3,
-        teacherName: "Ms. Olivia Carter",
-        course: "Software Engineering Principles",
-        topic: "Agile Methodology",
-        date: "2024-03-14",
-        duration: "2 hours",
-        studentsPresent: 28,
-        totalStudents: 30,
-        city: "Karachi",
-        institute: "Karachi Tech Campus",
-      },
-    ];
+    const fetchStudents = async () => {
+      try {
+        setLoading((prev) => ({ ...prev, students: true }));
+        setError(null);
+        const response = await api.get(
+          `/admin/campuses/${selectedCampus._id}/students`
+        );
+        setStudents(response.data?.data || []);
+        setLoading((prev) => ({ ...prev, students: false }));
+      } catch (err) {
+        setError("Failed to fetch students");
+        setLoading((prev) => ({ ...prev, students: false }));
+      }
+    };
 
-    setAttendanceData(sampleAttendance);
-    setLectureData(sampleLectures);
+    fetchStudents();
+  }, [selectedCampus]);
+
+  useEffect(() => {
+    if (!selectedStudent) return;
+
+    const fetchStudentDetails = async () => {
+      try {
+        setLoading((prev) => ({ ...prev, details: true }));
+        setError(null);
+
+        const [detailsRes, marksRes, attendanceRes] = await Promise.all([
+          api.get(`/admin/students/${selectedStudent._id}`),
+          api.get(`/admin/marks/${selectedStudent._id}`),
+          api.get(`/admin/attendance/${selectedStudent._id}`),
+        ]);
+
+        setStudentDetails({
+          ...(detailsRes.data?.data || {}),
+          marks: marksRes.data?.data || [],
+          attendance: attendanceRes.data?.data || [],
+        });
+        setLoading((prev) => ({ ...prev, details: false }));
+      } catch (err) {
+        setError("Failed to fetch student details");
+        setLoading((prev) => ({ ...prev, details: false }));
+      }
+    };
+
+    fetchStudentDetails();
+  }, [selectedStudent]);
+
+  // Event handlers
+  const handleCampusSelect = (campus) => {
+    setSelectedCampus(campus);
+    setSelectedStudent(null);
+    setStudentDetails(null);
   };
 
-  const handleFilterChange = (field, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleStudentSelect = (student) => {
+    setSelectedStudent(student);
   };
 
-  const handleClassClick = (courseName) => {
-    // Filter attendance data by course
-    const classAttendance = attendanceData.filter(
-      (record) => record.course === courseName
-    );
-    setSelectedClass(classAttendance);
+  const handleBackToCampuses = () => {
+    setSelectedCampus(null);
+    setStudents([]);
+    setSelectedStudent(null);
+    setStudentDetails(null);
   };
 
-  const handleStudentStatusClick = (status) => {
-    // Filter students based on their attendance status (present or absent)
-    const filtered = selectedClass.filter((record) => record.status === status);
-    setSelectedStudentStatus(filtered);
+  const handleBackToStudents = () => {
+    setSelectedStudent(null);
+    setStudentDetails(null);
   };
 
-  const filteredAttendanceData = attendanceData.filter((record) => {
-    if (filters.course && !record.course.toLowerCase().includes(filters.course.toLowerCase())) {
-      return false;
-    }
-    if (filters.city && !record.city.toLowerCase().includes(filters.city.toLowerCase())) {
-      return false;
-    }
-    if (filters.institute && !record.institute.toLowerCase().includes(filters.institute.toLowerCase())) {
-      return false;
-    }
-    if (filters.dateRange && record.date !== filters.dateRange) {
-      return false;
-    }
-    return true;
-  });
+  // Helper functions
+  const calculateAverage = (data, key) => {
+    if (!data || data.length === 0) return "N/A";
+    const sum = data.reduce((total, item) => total + (item[key] || 0), 0);
+    return (sum / data.length).toFixed(2);
+  };
 
-  const filteredLectureData = lectureData.filter((record) => {
-    if (filters.course && !record.course.toLowerCase().includes(filters.course.toLowerCase())) {
-      return false;
+  // Render functions
+  const renderCampuses = () => {
+    if (loading.campuses) {
+      return <div className="loading">Loading campuses...</div>;
     }
-    if (filters.teacher && !record.teacherName.toLowerCase().includes(filters.teacher.toLowerCase())) {
-      return false;
+
+    if (!campuses || campuses.length === 0) {
+      return <p className="no-data">No campuses available</p>;
     }
-    if (filters.city && !record.city.toLowerCase().includes(filters.city.toLowerCase())) {
-      return false;
-    }
-    if (filters.institute && !record.institute.toLowerCase().includes(filters.institute.toLowerCase())) {
-      return false;
-    }
-    return true;
-  });
 
-  return (
-    <div className="reports">
-      <div className="page-header">
-        <h1>Reports</h1>
-        <p>View and analyze attendance and lecture activity reports</p>
-      </div>
-
-      <div className="reports-tabs">
-        <button
-          className={`tab-btn ${activeTab === "attendance" ? "active" : ""}`}
-          onClick={() => setActiveTab("attendance")}
-        >
-          Attendance
-        </button>
-        <button
-          className={`tab-btn ${activeTab === "lecture" ? "active" : ""}`}
-          onClick={() => setActiveTab("lecture")}
-        >
-          Lecture Activity
-        </button>
-      </div>
-
-      <div className="filters-section">
-        <h3>Filters</h3>
-        <div className="filters-grid">
-          <div className="filter-group">
-            <select
-              value={filters.course}
-              onChange={(e) => handleFilterChange("course", e.target.value)}
-            >
-              <option value="">Select Course</option>
-              <option value="Introduction to Programming">Introduction to Programming</option>
-              <option value="Data Science Fundamentals">Data Science Fundamentals</option>
-              <option value="Web Development">Web Development</option>
-              <option value="Machine Learning">Machine Learning</option>
-            </select>
-          </div>
-
-          {activeTab === "lecture" && (
-            <div className="filter-group">
-              <select
-                value={filters.teacher}
-                onChange={(e) => handleFilterChange("teacher", e.target.value)}
-              >
-                <option value="">Select Teacher</option>
-                <option value="Dr. Eleanor Harper">Dr. Eleanor Harper</option>
-                <option value="Prof. Samuel Bennett">Prof. Samuel Bennett</option>
-                <option value="Ms. Olivia Carter">Ms. Olivia Carter</option>
-              </select>
+    return (
+      <div className="campuses-grid">
+        {campuses.map((campus) => (
+          <div
+            key={campus._id}
+            className="campus-card"
+            onClick={() => handleCampusSelect(campus)}
+          >
+            <h3>{campus.name}</h3>
+            <div className="campus-stats">
+              <div>
+                <span>{campus.students?.length || 0}</span>
+                <small>Students</small>
+              </div>
+              <div>
+                <span>{campus.courses?.length || 0}</span>
+                <small>Courses</small>
+              </div>
             </div>
-          )}
-
-          <div className="filter-group">
-            <select
-              value={filters.city}
-              onChange={(e) => handleFilterChange("city", e.target.value)}
-            >
-              <option value="">Select City</option>
-              <option value="Islamabad">Islamabad</option>
-              <option value="Lahore">Lahore</option>
-              <option value="Karachi">Karachi</option>
-            </select>
           </div>
+        ))}
+      </div>
+    );
+  };
 
-          <div className="filter-group">
-            <select
-              value={filters.institute}
-              onChange={(e) => handleFilterChange("institute", e.target.value)}
-            >
-              <option value="">Select Institute</option>
-              <option value="NEI Main Campus">NEI Main Campus</option>
-              <option value="Lahore Allied Campus">Lahore Allied Campus</option>
-              <option value="Karachi Tech Campus">Karachi Tech Campus</option>
-            </select>
-          </div>
+  const renderStudents = () => {
+    if (loading.students) {
+      return <div className="loading">Loading students...</div>;
+    }
 
-          <div className="filter-group">
-            <input
-              type="date"
-              value={filters.dateRange}
-              onChange={(e) => handleFilterChange("dateRange", e.target.value)}
-            />
+    if (!students || students.length === 0) {
+      return <p className="no-data">No students found for this campus</p>;
+    }
+
+    return (
+      <div className="students-list">
+        <table className="students-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Roll Number</th>
+              <th>Email</th>
+              <th>City</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map((student) => (
+              <tr key={student._id}>
+                <td>{student.name}</td>
+                <td>{student.rollNumber}</td>
+                <td>{student.email}</td>
+                <td>{student.city}</td>
+                <td>
+                  <button
+                    className="view-button"
+                    onClick={() => handleStudentSelect(student)}
+                  >
+                    View Report
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const renderStudentReport = () => {
+    if (loading.details) {
+      return <div className="loading">Loading student details...</div>;
+    }
+
+    if (!studentDetails) {
+      return <p className="no-data">No student details available</p>;
+    }
+
+    return (
+      <div className="report-content">
+        <div className="student-info">
+          <h3>Personal Information</h3>
+          <div className="info-grid">
+            {[
+              { label: "Name", value: studentDetails.name },
+              { label: "Roll Number", value: studentDetails.rollNumber },
+              { label: "Email", value: studentDetails.email },
+              { label: "Phone", value: studentDetails.phone || "N/A" },
+              { label: "City", value: studentDetails.city },
+              { label: "Campus", value: selectedCampus.name },
+            ].map((item, index) => (
+              <div key={index}>
+                <label>{item.label}:</label>
+                <span>{item.value}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      <div className="reports-content">
-        {activeTab === "attendance" && (
-          <div className="attendance-report">
-            <h2>Attendance Report</h2>
-            <div className="report-table">
-              <table>
+        <div className="academic-performance">
+          <h3>Academic Performance</h3>
+
+          <div className="marks-section">
+            <h4>Course Marks</h4>
+            {studentDetails.marks?.length > 0 ? (
+              <table className="marks-table">
                 <thead>
                   <tr>
-                    <th>Course</th>
-                    <th>Teacher</th>
-                    <th>Date</th>
-                    <th>City</th>
-                    <th>Institute</th>
-                    <th>Present Students</th>
-                    <th>Attendance %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredLectureData.map((record) => {
-                    const attendancePercentage =
-                      (record.studentsPresent / record.totalStudents) * 100;
-                    return (
-                      <tr key={record.id} onClick={() => handleClassClick(record.course)}>
-                        <td>{record.course}</td>
-                        <td>{record.teacherName}</td>
-                        <td>{record.date}</td>
-                        <td>{record.city}</td>
-                        <td>{record.institute}</td>
-                        <td>{record.studentsPresent}</td>
-                        <td>{attendancePercentage.toFixed(2)}%</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Display selected class details */}
-            {selectedClass && (
-              <div className="class-details">
-                <h3>Class Attendance Details for {selectedClass[0]?.course}</h3>
-                <button onClick={() => handleStudentStatusClick("Present")}>
-                  Show Present Students
-                </button>
-                <button onClick={() => handleStudentStatusClick("Absent")}>
-                  Show Absent Students
-                </button>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Student Name</th>
-                      <th>Course</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(selectedStudentStatus || selectedClass).map((record) => (
-                      <tr key={record.id}>
-                        <td>{record.studentName}</td>
-                        <td>{record.course}</td>
-                        <td>{record.date}</td>
-                        <td>
-                          <span className={`status ${record.status.toLowerCase()}`}>
-                            {record.status}
-                          </span>
-                        </td>
-                      </tr>
+                    {[
+                      "Course",
+                      "Midterm",
+                      "Final",
+                      "Assignments",
+                      "Total",
+                      "Grade",
+                    ].map((header, index) => (
+                      <th key={index}>{header}</th>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === "lecture" && (
-          <div className="lecture-report">
-            <h2>Lecture Activity Report</h2>
-            <div className="report-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Teacher Name</th>
-                    <th>Course</th>
-                    <th>Topic</th>
-                    <th>Date</th>
-                    <th>Duration</th>
-                    <th>City</th>
-                    <th>Institute</th>
-                    <th>Students Present</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredLectureData.map((record) => (
-                    <tr key={record.id}>
-                      <td>{record.teacherName}</td>
-                      <td>{record.course}</td>
-                      <td>{record.topic}</td>
-                      <td>{record.date}</td>
-                      <td>{record.duration}</td>
-                      <td>{record.city}</td>
-                      <td>{record.institute}</td>
-                      <td>{record.studentsPresent}</td>
+                  {studentDetails.marks.map((mark) => (
+                    <tr key={mark.course._id}>
+                      <td>{mark.course.name}</td>
+                      <td>{mark.midterm}</td>
+                      <td>{mark.final}</td>
+                      <td>{mark.assignments}</td>
+                      <td>{mark.total}</td>
+                      <td>{mark.grade}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            ) : (
+              <p className="no-data">No marks recorded</p>
+            )}
+          </div>
+
+          <div className="attendance-section">
+            <h4>Attendance Summary</h4>
+            {studentDetails.attendance?.length > 0 ? (
+              <table className="attendance-table">
+                <thead>
+                  <tr>
+                    {["Course", "Present", "Absent", "Leave", "Percentage"].map(
+                      (header, index) => (
+                        <th key={index}>{header}</th>
+                      )
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentDetails.attendance.map((record) => (
+                    <tr key={record.course._id}>
+                      <td>{record.course.name}</td>
+                      <td>{record.present}</td>
+                      <td>{record.absent}</td>
+                      <td>{record.leave}</td>
+                      <td>{record.percentage}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="no-data">No attendance records</p>
+            )}
+          </div>
+
+          <div className="performance-summary">
+            <h4>Overall Performance</h4>
+            <div className="summary-cards">
+              {[
+                {
+                  title: "Average Marks",
+                  value:
+                    studentDetails.marks?.length > 0
+                      ? calculateAverage(studentDetails.marks, "total")
+                      : "N/A",
+                },
+                {
+                  title: "Average Attendance",
+                  value:
+                    studentDetails.attendance?.length > 0
+                      ? `${calculateAverage(
+                          studentDetails.attendance,
+                          "percentage"
+                        )}%`
+                      : "N/A",
+                },
+                {
+                  title: "Courses Taken",
+                  value: studentDetails.marks?.length || 0,
+                },
+              ].map((item, index) => (
+                <div key={index} className="summary-card">
+                  <span className="card-title">{item.title}</span>
+                  <span className="card-value">{item.value}</span>
+                </div>
+              ))}
             </div>
           </div>
-        )}
+
+          <div className="report-actions">
+            <button className="print-button" onClick={() => window.print()}>
+              Print Report
+            </button>
+          </div>
+        </div>
       </div>
+    );
+  };
+
+  return (
+    <div className="reports-container">
+      <h1>Student Reports</h1>
+      <p className="subtitle">
+        View comprehensive student information including marks and attendance
+      </p>
+
+      {error && <div className="error-message">{error}</div>}
+
+      {!selectedCampus ? (
+        <div className="campuses-section">
+          <h2>Select a Campus</h2>
+          {renderCampuses()}
+        </div>
+      ) : !selectedStudent ? (
+        <div className="students-section">
+          <div className="section-header">
+            <button className="back-button" onClick={handleBackToCampuses}>
+              &larr; Back to Campuses
+            </button>
+            <h2>Students at {selectedCampus.name}</h2>
+          </div>
+          {renderStudents()}
+        </div>
+      ) : (
+        <div className="student-report-section">
+          <div className="section-header">
+            <button className="back-button" onClick={handleBackToStudents}>
+              &larr; Back to Students
+            </button>
+            <h2>Student Report: {selectedStudent.name}</h2>
+          </div>
+          {renderStudentReport()}
+        </div>
+      )}
     </div>
   );
 };
