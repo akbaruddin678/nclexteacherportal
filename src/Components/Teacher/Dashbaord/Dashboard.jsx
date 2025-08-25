@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import "./Dashboard.css";
 
 /** Utilities */
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+const API_BASE =
+  import.meta.env.VITE_API_BASE ||
+  "http://nclex.ap-south-1.elasticbeanstalk.com";
 
 const fetchJSON = async (url, token) => {
   const res = await fetch(url, {
@@ -38,7 +40,25 @@ const fmtDate = (iso) => {
 
 const onlyDateKey = (iso) => new Date(iso).toISOString().slice(0, 10);
 
-/** Calendar component (essential) */
+/** Simple Modal */
+const Modal = ({ open, title, onClose, children }) => {
+  if (!open) return null;
+  return (
+    <div className="modal-backdrop" role="dialog" aria-modal="true">
+      <div className="modal-panel">
+        <div className="modal-head">
+          <h3>{title}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
+            ×
+          </button>
+        </div>
+        <div className="modal-body">{children}</div>
+      </div>
+    </div>
+  );
+};
+
+/** Calendar (unchanged except it now receives notif dates too) */
 const Calendar = ({ eventDates = [] }) => {
   const [cursor, setCursor] = useState(() => {
     const d = new Date();
@@ -51,22 +71,15 @@ const Calendar = ({ eventDates = [] }) => {
     const year = cursor.getFullYear();
     const month = cursor.getMonth(); // 0-11
     const firstDay = new Date(year, month, 1);
-    const startWeekday = (firstDay.getDay() + 6) % 7; // make Monday=0
+    const startWeekday = (firstDay.getDay() + 6) % 7; // Monday=0
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const cells = [];
-    // Leading blanks
     for (let i = 0; i < startWeekday; i++) cells.push(null);
-    // Month days
-    for (let d = 1; d <= daysInMonth; d++) {
-      cells.push(new Date(year, month, d));
-    }
-    // Trailing blanks to complete rows of 7
+    for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d));
     while (cells.length % 7 !== 0) cells.push(null);
 
     return {
-      year,
-      month,
       label: new Intl.DateTimeFormat(undefined, {
         month: "long",
         year: "numeric",
@@ -115,7 +128,7 @@ const Calendar = ({ eventDates = [] }) => {
         {info.cells.map((d, i) => {
           if (!d) return <div key={i} className="cal-cell empty" />;
           const key = onlyDateKey(d.toISOString());
-          const isToday = key === todayKey;
+          const isToday = key === onlyDateKey(new Date().toISOString());
           const hasEvent = eventSet.has(key);
           return (
             <div key={i} className={`cal-cell day ${isToday ? "today" : ""}`}>
@@ -134,6 +147,11 @@ const Dashboard = () => {
   const [err, setErr] = useState("");
   const [data, setData] = useState(null);
 
+  // NEW: notifications + modal state
+  const [notifications, setNotifications] = useState([]);
+  const [notifErr, setNotifErr] = useState("");
+  const [notifModalOpen, setNotifModalOpen] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -143,13 +161,19 @@ const Dashboard = () => {
     }
     (async () => {
       try {
-        const res = await fetchJSON(
-          `${API_BASE}/api/v1/teacher/dashboard`,
-          token
-        );
-        setData(res?.data || null);
+        const [dashRes, notifRes] = await Promise.all([
+          fetchJSON(`${API_BASE}/api/v1/teacher/dashboard`, token),
+          fetchJSON(`${API_BASE}/api/v1/notifications`, token),
+        ]);
+        setData(dashRes?.data || null);
+        setNotifications(notifRes?.data || []);
       } catch (e) {
-        setErr(e.message || "Failed to load dashboard");
+        // If notifications fail, still show dashboard
+        if (String(e.message || "").includes("/notifications")) {
+          setNotifErr(e.message);
+        } else {
+          setErr(e.message || "Failed to load dashboard");
+        }
       } finally {
         setLoading(false);
       }
@@ -161,23 +185,59 @@ const Dashboard = () => {
   const assessments = data?.assessments || [];
   const attendance = data?.attendance || [];
 
-  // Build "Upcoming" from assessments sorted by date desc->asc (nearest future first)
-  const upcoming = useMemo(() => {
-    const now = new Date();
-    return assessments
-      .filter((a) => (a?.date ? new Date(a.date) : null))
-      .sort((a, b) => new Date(a.date) - new Date(b.date))
-      .filter((a) => new Date(a.date) >= now)
-      .slice(0, 6);
-  }, [assessments]);
-
-  // Dates to dot on calendar (attendance + assessments)
+  // Dates to dot on calendar (attendance + assessments + notifications)
   const calendarDates = useMemo(() => {
     const dates = [];
     for (const a of attendance) if (a?.date) dates.push(a.date);
     for (const e of assessments) if (e?.date) dates.push(e.date);
+    for (const n of notifications) if (n?.schedule) dates.push(n.schedule);
     return dates;
-  }, [attendance, assessments]);
+  }, [attendance, assessments, notifications]);
+
+  // Upcoming = next assessments + scheduled notifications (soonest first)
+  const upcoming = useMemo(() => {
+    const now = new Date();
+
+    const upAssess = (assessments || [])
+      .filter((a) => a?.date)
+      .map((a) => ({
+        _id: `assess-${a._id}`,
+        kind: "assessment",
+        when: new Date(a.date),
+        title: `${a?.type ? a.type.toUpperCase() : "ASSESSMENT"} — ${
+          a?.course?.name || "Course"
+        }`,
+        meta: [
+          fmtDate(a.date),
+          a?.student?.name ? `• ${a.student.name}` : "",
+          a?.gradedBy?.name ? `• Graded by ${a.gradedBy.name}` : "",
+        ]
+          .filter(Boolean)
+          .join(" "),
+      }))
+      .filter((x) => x.when >= now);
+
+    const upNotifs = (notifications || [])
+      .filter((n) => n?.schedule)
+      .map((n) => ({
+        _id: `notif-${n._id}`,
+        kind: "notification",
+        when: new Date(n.schedule),
+        title: `Notification — ${n.subject || "(No subject)"}`,
+        meta: [
+          fmtDate(n.schedule),
+          n?.recipientType ? `• To: ${n.recipientType}` : "",
+          n?.createdBy?.name ? `• From: ${n.createdBy.name}` : "",
+        ]
+          .filter(Boolean)
+          .join(" "),
+      }))
+      .filter((x) => x.when >= now);
+
+    return [...upAssess, ...upNotifs]
+      .sort((a, b) => a.when - b.when)
+      .slice(0, 6);
+  }, [assessments, notifications]);
 
   if (loading) {
     return (
@@ -236,7 +296,6 @@ const Dashboard = () => {
                   </div>
                   <div className="course-meta">
                     <span>No. Students : {c?.students?.length || 0} </span>
-
                     {c?.code && <span>• {c.code}</span>}
                   </div>
                 </li>
@@ -245,41 +304,97 @@ const Dashboard = () => {
           )}
         </section>
 
-        {/* Calendar (essential) */}
+        {/* Calendar */}
         <section className="card">
           <h3>Calendar</h3>
           <Calendar eventDates={calendarDates} />
           <div className="legend">
-            <span className="legend-dot" /> Attendance / Assessments
+            <span className="legend-dot" /> Attendance / Assessments /
+            Notifications
           </div>
         </section>
 
-        {/* Upcoming (derived from assessments) */}
+        {/* Upcoming (assessments + notifications) */}
         <section className="card">
-          <h3>Upcoming</h3>
+          <div className="card-head-row">
+            <h3>Upcoming</h3>
+            <button
+              className="link-btn"
+              onClick={() => setNotifModalOpen(true)}
+              title="View all notifications"
+            >
+              View all notifications
+            </button>
+          </div>
+
           {upcoming.length === 0 ? (
             <p className="muted">No upcoming items.</p>
           ) : (
             <ul className="upcoming-list">
               {upcoming.map((u) => (
-                <li key={u._id} className="upcoming-item">
-                  <div className="up-title">
-                    {u?.type ? u.type.toUpperCase() : "ASSESSMENT"} —{" "}
-                    {u?.course?.name || "Course"}
-                  </div>
-                  <div className="up-meta">
-                    <span>{fmtDate(u.date)}</span>
-                    {u?.student?.name && <span>• {u.student.name}</span>}
-                    {u?.gradedBy?.name && (
-                      <span>• Graded by {u.gradedBy.name}</span>
-                    )}
-                  </div>
+                <li
+                  key={u._id}
+                  className={`upcoming-item ${u.kind}`}
+                  onClick={() => {
+                    if (u.kind === "notification") setNotifModalOpen(true);
+                  }}
+                  style={{
+                    cursor: u.kind === "notification" ? "pointer" : "default",
+                  }}
+                  title={
+                    u.kind === "notification" ? "Open notifications" : undefined
+                  }
+                >
+                  <div className="up-title">{u.title}</div>
+                  <div className="up-meta">{u.meta}</div>
                 </li>
               ))}
             </ul>
           )}
+
+          {notifErr && (
+            <p className="muted" style={{ marginTop: 8 }}>
+              Notifications: {notifErr}
+            </p>
+          )}
         </section>
       </div>
+
+      {/* Modal: All notifications */}
+      <Modal
+        open={notifModalOpen}
+        title="All Notifications"
+        onClose={() => setNotifModalOpen(false)}
+      >
+        {notifications.length === 0 ? (
+          <p className="muted">No notifications available.</p>
+        ) : (
+          <ul className="notif-list">
+            {notifications
+              .slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+              )
+              .map((n) => (
+                <li key={n._id} className="notif-row">
+                  <div className="notif-subject">
+                    {n.subject || "(No subject)"}
+                  </div>
+                  <div className="notif-meta">
+                    {n.createdAt ? fmtDate(n.createdAt) : ""}
+                    {n.recipientType ? ` • To: ${n.recipientType}` : ""}
+                    {n?.createdBy?.name ? ` • From: ${n.createdBy.name}` : ""}
+                    {n.schedule ? ` • Scheduled: ${fmtDate(n.schedule)}` : ""}
+                  </div>
+                  {n.message && (
+                    <div className="notif-message">{n.message}</div>
+                  )}
+                </li>
+              ))}
+          </ul>
+        )}
+      </Modal>
     </div>
   );
 };

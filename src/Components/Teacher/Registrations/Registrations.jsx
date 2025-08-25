@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Registrations.css";
 import { MdPeople } from "react-icons/md";
-import data from "../../SuperAdmin/Category/categoryData.json"; // Import your category data
+
 
 const Registration = ({ initialTab = "student" }) => {
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -93,25 +93,44 @@ const Registration = ({ initialTab = "student" }) => {
       </div>
 
       <div className="registration-tabs">
-        <button className={`tab-btn ${activeTab === "student" ? "active" : ""}`} onClick={() => handleTabChange("student")}><MdPeople /> Student</button>
+        <button
+          className={`tab-btn ${activeTab === "student" ? "active" : ""}`}
+          onClick={() => handleTabChange("student")}
+        >
+          <MdPeople /> Student
+        </button>
       </div>
 
       <form onSubmit={handleSubmit} className="registration-form-container">
         <div className="form-row">
           <div className="form-group">
             <label>Full Name *</label>
-            <input type="text" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} required />
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              required
+            />
           </div>
           <div className="form-group">
             <label>Email Address *</label>
-            <input type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} required />
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              required
+            />
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group">
             <label>City *</label>
-            <select value={formData.city} onChange={(e) => handleInputChange("city", e.target.value)} required>
+            <select
+              value={formData.city}
+              onChange={(e) => handleInputChange("city", e.target.value)}
+              required
+            >
               <option value="">Select City</option>
               {cities.map((city, idx) => (
                 <option key={idx} value={city}>
@@ -122,7 +141,11 @@ const Registration = ({ initialTab = "student" }) => {
           </div>
           <div className="form-group">
             <label>Campus *</label>
-            <select value={formData.campus} onChange={(e) => handleInputChange("campus", e.target.value)} required>
+            <select
+              value={formData.campus}
+              onChange={(e) => handleInputChange("campus", e.target.value)}
+              required
+            >
               <option value="">Select Campus</option>
               {campuses.map((campus, idx) => (
                 <option key={idx} value={campus}>
@@ -136,55 +159,100 @@ const Registration = ({ initialTab = "student" }) => {
         <div className="form-row">
           <div className="form-group">
             <label>Program *</label>
-            <select value={formData.program} onChange={(e) => handleInputChange("program", e.target.value)} required>
+            <select
+              value={formData.program}
+              onChange={(e) => handleInputChange("program", e.target.value)}
+              required
+            >
               <option value="">Select Program</option>
-              <option value="InterTech">InterTech</option>
+              <option value="Nclex">Nclex</option>
               <option value="MatricTech">MatricTech</option>
               <option value="MedicalTech">MedicalTech</option>
             </select>
           </div>
           <div className="form-group">
             <label>Course *</label>
-            <input type="text" value={formData.course} onChange={(e) => handleInputChange("course", e.target.value)} required />
+            <input
+              type="text"
+              value={formData.course}
+              onChange={(e) => handleInputChange("course", e.target.value)}
+              required
+            />
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group">
             <label>Date of Birth *</label>
-            <input type="date" value={formData.dateOfBirth} onChange={(e) => handleInputChange("dateOfBirth", e.target.value)} required />
+            <input
+              type="date"
+              value={formData.dateOfBirth}
+              onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+              required
+            />
           </div>
           <div className="form-group">
             <label>Student CNIC *</label>
-            <input type="text" value={formData.studentCnic} onChange={(e) => handleInputChange("studentCnic", e.target.value)} required />
+            <input
+              type="text"
+              value={formData.studentCnic}
+              onChange={(e) => handleInputChange("studentCnic", e.target.value)}
+              required
+            />
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group">
             <label>Guardian Name *</label>
-            <input type="text" value={formData.guardianName} onChange={(e) => handleInputChange("guardianName", e.target.value)} required />
+            <input
+              type="text"
+              value={formData.guardianName}
+              onChange={(e) =>
+                handleInputChange("guardianName", e.target.value)
+              }
+              required
+            />
           </div>
           <div className="form-group">
             <label>Guardian Phone *</label>
-            <input type="text" value={formData.guardianPhone} onChange={(e) => handleInputChange("guardianPhone", e.target.value)} required />
+            <input
+              type="text"
+              value={formData.guardianPhone}
+              onChange={(e) =>
+                handleInputChange("guardianPhone", e.target.value)
+              }
+              required
+            />
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group">
             <label>Course Fees</label>
-            <input type="number" value={formData.fees} onChange={(e) => handleInputChange("fees", e.target.value)} />
+            <input
+              type="number"
+              value={formData.fees}
+              onChange={(e) => handleInputChange("fees", e.target.value)}
+            />
           </div>
           <div className="form-group">
             <label>Address</label>
-            <textarea value={formData.address} onChange={(e) => handleInputChange("address", e.target.value)} rows="3" />
+            <textarea
+              value={formData.address}
+              onChange={(e) => handleInputChange("address", e.target.value)}
+              rows="3"
+            />
           </div>
         </div>
 
         <div className="form-actions">
-          <button type="button" onClick={resetForm} className="reset-btn">Reset</button>
-          <button type="submit" className="submit-btn">Register</button>
+          <button type="button" onClick={resetForm} className="reset-btn">
+            Reset
+          </button>
+          <button type="submit" className="submit-btn">
+            Register
+          </button>
         </div>
       </form>
     </div>

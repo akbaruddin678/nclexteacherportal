@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/v1";
+const API_URL = "http://nclex.ap-south-1.elasticbeanstalk.com/api/v1";
 
 // Create axios instance
 const api = axios.create({
@@ -163,10 +163,13 @@ export const assignCoordinatorToCampus = async (coordinatorId, campusId) => {
 };
 
 export const assignTeachersToCourses = async (teacherId, courseIds) => {
-  const response = await api.post("/admin/assign/teachers", {
-    teacherId,
-    courseIds,
-  });
+  const response = await api.post(
+    "/admin/assign/teacher-to-course-and-campus",
+    {
+      teacherId,
+      courseIds,
+    }
+  );
   return response.data;
 };
 
@@ -225,9 +228,8 @@ export const getUnassignedCourses = async (page = 1) => {
 };
 
 //API RELATED TO COORDINATOR PORTAL
-// In your api.js service file
 export const getStudentsByCampus = async (campusId) => {
-  const response = await axios.get(`/api/students?campus=${campusId}`);
+  const response = await api.get(`/admin/campuses/${campusId}/students`);
   return response.data;
 };
 

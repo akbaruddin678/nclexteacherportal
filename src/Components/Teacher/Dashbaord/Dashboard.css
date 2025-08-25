@@ -264,3 +264,112 @@
 .muted {
   color: var(--muted);
 }
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.modal-panel {
+  width: min(820px, 92vw);
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-body {
+  padding: 12px 16px;
+  overflow: auto;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Card head row with action */
+.card-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* Notification list in modal */
+.notif-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.notif-row {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.notif-subject {
+  font-weight: 600;
+}
+
+.notif-meta {
+  color: #667085;
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.notif-message {
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* Upcoming items */
+.upcoming-item.notification .up-title::before {
+  content: "🛎️ ";
+}
+
+.upcoming-item.assessment .up-title::before {
+  content: "📝 ";
+}
+
+/* Calendar legend dot */
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #111;
+  margin-right: 6px;
+}

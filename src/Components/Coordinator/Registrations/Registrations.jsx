@@ -5,7 +5,7 @@ import "./Registrations.css";
 
 /* ------------------------ Axios setup ------------------------ */
 // Prefer env base when calling from a different origin, else same-origin
-const API_BASE = "http://localhost:5000";
+const API_BASE = "http://nclex.ap-south-1.elasticbeanstalk.com";
 // Coordinator scope base
 const api = axios.create({
   baseURL: `${API_BASE}/api/v1/coordinator`,

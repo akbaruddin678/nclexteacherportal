@@ -61,18 +61,18 @@ function SavedWeekTable({ snap, onWheelX }) {
                 <div className="vw-day-date">
                   {head.startDateISO ? humanDate(head.startDateISO) : "—"}
                 </div>
+                <div className="vw-unit">
+                  {head.unitSat || "—"}
+                  {unitTag}
+                </div>
               </th>
-              {timesSat.map((t) => (
+              {timesSat.map((t, i) => (
                 <th key={`sat-t-${t}`} className="vw-time sticky-top">
                   {compact(t)}-{plus60(t)}
                 </th>
               ))}
             </tr>
             <tr>
-              <th className="vw-unit sticky-col">
-                {head.unitSat || "—"}
-                {unitTag}
-              </th>
               {timesSat.map((_, i) => (
                 <td key={`sat-c-${i}`} className="vw-topic">
                   {cells[i]?.text ? (
@@ -91,18 +91,21 @@ function SavedWeekTable({ snap, onWheelX }) {
                 <div className="vw-day-date">
                   {head.endDateISO ? humanDate(head.endDateISO) : "—"}
                 </div>
+                <div className="vw-unit">
+                  {head.unitSun || "—"}
+                  {unitTag}
+                </div>
               </th>
-              {timesSun.map((t) => (
-                <th key={`sun-t-${t}`} className="vw-time sticky-top">
-                  {compact(t)}-{plus60(t)}
-                </th>
-              ))}
+              {timesSun.map((t, i) => {
+                const idx = sundayOffset + i;
+                return (
+                  <th key={`sun-t-${t}`} className="vw-time sticky-top">
+                    {compact(t)}-{plus60(t)}
+                  </th>
+                );
+              })}
             </tr>
             <tr>
-              <th className="vw-unit sticky-col">
-                {head.unitSun || "—"}
-                {unitTag}
-              </th>
               {timesSun.map((_, i) => {
                 const idx = sundayOffset + i;
                 return (
@@ -142,7 +145,7 @@ export default function UploadLessonsPlans() {
     }
   }, []);
 
-  const loadSavedWeeks = async (pageNum = 1, append = false) => {
+  const loadSavedWeeks = async (pageNum = 7, append = false) => {
     try {
       setLoading(true);
       setErr("");
@@ -175,8 +178,7 @@ export default function UploadLessonsPlans() {
       <header className="lp-header">
         <div className="lp-header-inner">
           <div className="lp-header-text">
-            <h1 className="lp-title">Weekly Lesson Plans</h1>
-            <div className="lp-subline">Read-only viewer</div>
+            <h1 className="lp-title">Lesson Plans</h1>
           </div>
           <div className="lp-head-controls">
             <button

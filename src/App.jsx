@@ -52,7 +52,7 @@ import ProtectedRoute from "./Components/Common/ProtectedRoute";
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
 
       {/* Nest all superadmin routes under this layout */}
 

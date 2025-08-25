@@ -26,15 +26,20 @@ const TeacherSidebar= ({ isOpen, setIsOpen }) => {
   return (
     <div className={`sidebar ${isOpen ? "open" : ""}`}>
       <div className="sidebar-header">
-        <h2 onClick={() => navigate("/dashboard")} style={{ cursor: "pointer" }}>
-          InterTech LMS
+        <h2
+          onClick={() => navigate("/dashboard")}
+          style={{ cursor: "pointer" }}
+        >
+          Nclex LMS
         </h2>
       </div>
       <nav className="sidebar-nav" role="navigation">
         {menuItems.map((item) => (
           <button
             key={item.id}
-            className={`nav-item ${activeComponent === item.id ? "active" : ""}`}
+            className={`nav-item ${
+              activeComponent === item.id ? "active" : ""
+            }`}
             onClick={() => {
               navigate(item.id);
               setIsOpen?.(false); // Close on mobile after navigation
@@ -45,21 +50,25 @@ const TeacherSidebar= ({ isOpen, setIsOpen }) => {
           </button>
         ))}
       </nav>
-   {/* Bottom item */}
-       <div className="sidebar-footer">
-         <button
-           className={`nav-item ${activeComponent === "/teacher/help" ? "active" : ""}`}
-           onClick={() => {
-             navigate("/teacher/help");
-             setIsOpen?.(false);
-           }}
-         >
-           <span className="nav-icon"><MdHelp /></span>
-           <span className="nav-label">Help and Docs</span>
-         </button>
-       </div>
-     </div>
-   );
+      {/* Bottom item */}
+      <div className="sidebar-footer">
+        <button
+          className={`nav-item ${
+            activeComponent === "/teacher/help" ? "active" : ""
+          }`}
+          onClick={() => {
+            navigate("/teacher/help");
+            setIsOpen?.(false);
+          }}
+        >
+          <span className="nav-icon">
+            <MdHelp />
+          </span>
+          <span className="nav-label">Help and Docs</span>
+        </button>
+      </div>
+    </div>
+  );
  };
  
 export default TeacherSidebar

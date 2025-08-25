@@ -11,7 +11,7 @@ const Category = () => {
     const fetchDashboardData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/v1/coordinator/dashboard",
+          "http://nclex.ap-south-1.elasticbeanstalk.com/api/v1/coordinator/dashboard",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

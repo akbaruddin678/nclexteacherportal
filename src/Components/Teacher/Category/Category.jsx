@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Category.css";
-import data from "../../SuperAdmin/Category/categoryData.json";
+
 
 const Category = () => {
   // Mock logged-in teacher credentials

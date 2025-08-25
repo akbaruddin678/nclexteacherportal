@@ -94,6 +94,156 @@ const Registrations = () => {
     courseFile: null,
   });
 
+  // --- Helpers ---
+  const normalizeCNIC = (cnic) => (cnic || "").replace(/\D/g, ""); // keep digits only
+  const normalizePhone = (p) => (p || "").replace(/\D/g, "");
+  const isValidEmail = (e) => !!e && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+  // --- NEW: Fetch applicants and register ---
+  const handleFetchAndRegisterFromPortal = async () => {
+    try {
+      setLoading(true);
+      setErrorMessage("");
+      setSuccessMessage("");
+
+      // 1) Fetch remote applicants
+      const res = await fetch(
+        "https://unruffled-mirzakhani.210-56-25-68.plesk.page/api/applicants/searchbywholedata",
+        { method: "GET" }
+      );
+      if (!res.ok) {
+        throw new Error(`Remote fetch failed: ${res.status} ${res.statusText}`);
+      }
+      const remote = await res.json();
+      const remoteList = Array.isArray(remote?.data) ? remote.data : [];
+
+      // 2) Pull existing students once, build a CNIC set to de-dup
+      const existing = await getStudents();
+      const existingByCNIC = new Set(
+        (existing?.data || []).map((s) => normalizeCNIC(s.cnic)).filter(Boolean)
+      );
+
+      const toCreate = [];
+      const skipped = [];
+
+      for (const record of remoteList) {
+        const a = record?.applicant || {};
+        const r = record?.result || {};
+
+        const total =
+          Number(r?.testMark || 0) +
+          Number(r?.essayMark || 0) +
+          Number(r?.interviewMark || 0);
+
+        // Normalize
+        const cnicDigits = normalizeCNIC(a.cnic);
+        const phoneDigits = normalizePhone(a.contact);
+
+        // Basic validations to satisfy your schema/UI
+        const payload = {
+          name: (a.applicant_name || "").trim(),
+          email: (a.email || "").trim(), // your schema currently requires this
+          phone: phoneDigits, // your schema requires this
+          cnic: cnicDigits, // required (13 digits in your UI rule)
+          pncNo: (a.pnmc_no || "").trim(), // your schema currently requires this
+          passport: "", // not available from payload; keep empty
+          status: "Active",
+          documentstatus: "notverified",
+          city: (a.district || a.province || "").trim(), // optional: map "city" if you want
+        };
+
+        // Skip reasons
+        if (!payload.name) {
+          skipped.push({ cnic: a.cnic, reason: "Missing name" });
+          continue;
+        }
+        if (!payload.cnic || payload.cnic.length !== 13) {
+          skipped.push({
+            cnic: a.cnic,
+            reason: "Invalid CNIC (need 13 digits)",
+          });
+          continue;
+        }
+        if (!payload.phone || payload.phone.length < 10) {
+          skipped.push({ cnic: a.cnic, reason: "Missing/invalid phone" });
+          continue;
+        }
+        // If your schema requires email & pncNo (it does in your snippet)
+        if (!isValidEmail(payload.email)) {
+          skipped.push({ cnic: a.cnic, reason: "Missing/invalid email" });
+          continue;
+        }
+        if (!payload.pncNo) {
+          skipped.push({ cnic: a.cnic, reason: "Missing PNC No" });
+          continue;
+        }
+
+        // 3) Total marks gate
+        if (total < 50) {
+          skipped.push({ cnic: a.cnic, reason: `Total marks ${total} < 50` });
+          continue;
+        }
+
+        // 4) Duplicate check (by CNIC)
+        if (existingByCNIC.has(payload.cnic)) {
+          skipped.push({ cnic: a.cnic, reason: "Already exists" });
+          continue;
+        }
+
+        // Passed all checks -> stage for creation
+        toCreate.push(payload);
+      }
+
+      // 5) Create in parallel (but safely)
+      const results = await Promise.allSettled(
+        toCreate.map((stu) => createStudent(stu))
+      );
+
+      // Track successes & failed inserts
+      let createdCount = 0;
+      results.forEach((r, idx) => {
+        if (r.status === "fulfilled") {
+          createdCount += 1;
+          // add to the existing set so duplicates in same batch are blocked too
+          existingByCNIC.add(toCreate[idx].cnic);
+        } else {
+          skipped.push({
+            cnic: toCreate[idx].cnic,
+            reason: r.reason?.message || "API create failed",
+          });
+        }
+      });
+
+      setSuccessMessage(
+        `Portal import done: ${createdCount} registered, ${skipped.length} skipped.`
+      );
+
+      // Show a concise skip summary (first few lines)
+      if (skipped.length) {
+        const preview = skipped
+          .slice(0, 5)
+          .map((s) => `• ${s.cnic || "CNIC?"}: ${s.reason}`)
+          .join("\n");
+        setErrorMessage(
+          `${skipped.length} skipped:\n${preview}${
+            skipped.length > 5 ? "\n…more" : ""
+          }`
+        );
+      }
+
+      // If you're currently in "view" mode for students, refresh the table
+      if (activeTab === "student" && viewMode === "view") {
+        const refreshed = await getStudents();
+        setDataList(refreshed.data || []);
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorMessage(err.message || "Failed to fetch/register from portal");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [campuses, setCampuses] = useState([]);
@@ -406,7 +556,6 @@ const Registrations = () => {
             "email",
             "subjectSpecialization",
             "qualifications",
-            "campusId",
           ];
           if (!formData.name) validationErrors.push("Name is required");
           if (!formData.email) {
@@ -428,24 +577,17 @@ const Registrations = () => {
           if (!formData.qualifications) {
             validationErrors.push("Qualifications are required");
           }
-          if (!formData.campusId) {
-            validationErrors.push("Campus selection is required");
-          }
+
           if (formData.phone && !validatePhone(formData.phone)) {
             validationErrors.push("Invalid phone number format");
-          }
-          if (formData.cnic && !validateCNIC(formData.cnic)) {
-            validationErrors.push("CNIC must be 13 digits");
           }
 
           dataToSend = {
             name: formData.name,
             email: formData.email,
             contactNumber: formData.phone,
-            cnic: formData.cnic,
             subjectSpecialization: formData.subjectSpecialization,
             qualifications: formData.qualifications,
-            campusId: formData.campusId,
           };
           // Only include password if it's being updated or creating new
           if (formData.password) {
@@ -855,7 +997,7 @@ const Registrations = () => {
                 </button>
               </div>
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
               <label>Campus *</label>
               <select
                 value={formData.campusId}
@@ -869,7 +1011,7 @@ const Registrations = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
           <div className="form-row">
             <div className="form-group">
@@ -884,7 +1026,7 @@ const Registrations = () => {
               />
             </div>
             <div className="form-group">
-              <label>Qualifications *</label>
+              <label>Qualifications </label>
               <input
                 type="text"
                 value={formData.qualifications}
@@ -906,7 +1048,7 @@ const Registrations = () => {
                 title="10-15 digit phone number"
               />
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
               <label>CNIC</label>
               <input
                 type="text"
@@ -915,7 +1057,7 @@ const Registrations = () => {
                 pattern="[0-9]{13}"
                 title="13 digit CNIC number"
               />
-            </div>
+            </div> */}
           </div>
         </>
       )}
@@ -985,16 +1127,6 @@ const Registrations = () => {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Status</label>
-              <select
-                value={formData.status}
-                onChange={(e) => handleInputChange("status", e.target.value)}
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-            </div>
-            <div className="form-group">
               <label>Document Status</label>
               <select
                 value={formData.documentstatus}
@@ -1034,6 +1166,17 @@ const Registrations = () => {
                       {loading ? "Importing..." : "Import Students"}
                     </button>
                   )}
+
+                  {/* >>> NEW BUTTON: Fetch & Register from Portal <<< */}
+                  <button
+                    type="button"
+                    onClick={handleFetchAndRegisterFromPortal}
+                    className="import-btn secondary"
+                    disabled={loading}
+                    style={{ marginLeft: "8px" }}
+                  >
+                    {loading ? "Processing..." : "Fetch & Register from Portal"}
+                  </button>
                 </div>
                 <small className="hint">
                   Excel should contain columns: name, email, phone, cnic, pncNo,
@@ -1110,90 +1253,6 @@ const Registrations = () => {
               />
             </div>
           </div>
-          <div className="content-section">
-            <h3>Course Content Outline</h3>
-            <div className="content-form">
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Title *</label>
-                  <input
-                    type="text"
-                    value={formData.currentContent.title}
-                    onChange={(e) =>
-                      handleContentChange("title", e.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Duration</label>
-                  <input
-                    type="text"
-                    value={formData.currentContent.duration}
-                    onChange={(e) =>
-                      handleContentChange("duration", e.target.value)
-                    }
-                    placeholder="e.g., Week 1, Month 2"
-                  />
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Description</label>
-                  <textarea
-                    value={formData.currentContent.description}
-                    onChange={(e) =>
-                      handleContentChange("description", e.target.value)
-                    }
-                    rows="2"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Remarks</label>
-                  <textarea
-                    value={formData.currentContent.remarks}
-                    onChange={(e) =>
-                      handleContentChange("remarks", e.target.value)
-                    }
-                    rows="2"
-                  />
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={addContentItem}
-                className="add-content-btn"
-              >
-                <MdAdd /> Add Content Item
-              </button>
-            </div>
-            {formData.courseContent.length > 0 && (
-              <div className="content-list">
-                <h4>Current Content Items</h4>
-                <ul>
-                  {formData.courseContent.map((item, index) => (
-                    <li key={index}>
-                      <div className="content-item">
-                        <strong>{item.title}</strong>
-                        {item.duration && <span> ({item.duration})</span>}
-                        {item.description && <p>{item.description}</p>}
-                        {item.remarks && (
-                          <p className="remarks">Note: {item.remarks}</p>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => removeContentItem(index)}
-                          className="remove-btn"
-                        >
-                          <MdDelete />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
         </>
       )}
 
@@ -1249,7 +1308,7 @@ const Registrations = () => {
             { header: "Name", accessor: "name" },
             { header: "Email", accessor: "user.email" },
             { header: "Specialization", accessor: "subjectSpecialization" },
-            { header: "Campus", accessor: "campus.name" },
+            { header: "Qualification", accessor: "qualifications" },
             { header: "Actions", accessor: "actions" },
           ];
         case "student":
@@ -1257,7 +1316,10 @@ const Registrations = () => {
             { header: "Name", accessor: "name" },
             { header: "CNIC", accessor: "cnic" },
             { header: "Email", accessor: "email" },
-            { header: "Status", accessor: "status" },
+            { header: "Phone", accessor: "phone" },
+            { header: "City", accessor: "city" },
+            { header: "PNC No", accessor: "pncNo" },
+            { header: "Passport", accessor: "passport" },
             { header: "Doc Status", accessor: "documentstatus" },
             { header: "Actions", accessor: "actions" },
           ];

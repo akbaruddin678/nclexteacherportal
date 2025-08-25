@@ -6,7 +6,7 @@
         "name": "Islamabad Campus 1",
         "programs": [
           {
-            "name": "InterTech",
+            "name": "Nclex",
             "courses": [
               {
                 "name": "Computer Science Basics",
@@ -81,7 +81,7 @@
         "name": "Lahore Allied Campus",
         "programs": [
           {
-            "name": "InterTech",
+            "name": "Nclex",
             "courses": [
               {
                 "name": "Computer Science Basics",
@@ -122,7 +122,7 @@
         "name": "Karachi Tech Campus",
         "programs": [
           {
-            "name": "InterTech",
+            "name": "Nclex",
             "courses": [
               {
                 "name": "Mathematics 101",

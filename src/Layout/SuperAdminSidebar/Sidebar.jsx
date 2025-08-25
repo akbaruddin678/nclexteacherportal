@@ -41,7 +41,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           onClick={() => navigate("/admin/dashboard")}
           style={{ cursor: "pointer" }}
         >
-          InterTech LMS
+          Nclex LMS
         </h2>
       </div>
       <nav className="sidebar-nav" role="navigation">

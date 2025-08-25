@@ -5,38 +5,40 @@ import "./Settings.css"
 
 const Settings = () => {
   const [settings, setSettings] = useState({
-    siteName: "InterTech LMS",
-    adminEmail: "admin@intertech.edu",
+    siteName: "Nclex LMS",
+    adminEmail: "admin@Nclex.edu",
     notifications: true,
     emailNotifications: true,
     autoBackup: true,
     maintenanceMode: false,
-  })
+  });
 
   const handleSettingChange = (field, value) => {
     setSettings((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSave = () => {
-    localStorage.setItem("systemSettings", JSON.stringify(settings))
-    alert("Settings saved successfully!")
-  }
+    localStorage.setItem("systemSettings", JSON.stringify(settings));
+    alert("Settings saved successfully!");
+  };
 
   const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset all settings to default?")) {
+    if (
+      window.confirm("Are you sure you want to reset all settings to default?")
+    ) {
       setSettings({
-        siteName: "InterTech LMS",
-        adminEmail: "admin@intertech.edu",
+        siteName: "Nclex LMS",
+        adminEmail: "admin@Nclex.edu",
         notifications: true,
         emailNotifications: true,
         autoBackup: true,
         maintenanceMode: false,
-      })
+      });
     }
-  }
+  };
 
   return (
     <div className="settings">
