@@ -5,9 +5,7 @@ const API_URL = "http://nclex.ap-south-1.elasticbeanstalk.com/api/v1";
 // Create axios instance
 const api = axios.create({
   baseURL: "/api/v1",
-  headers: {
-    "Content-Type": "application/json",
-  },
+
 });
 
 // Request interceptor to add auth token
