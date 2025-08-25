@@ -4,7 +4,7 @@ const API_URL = "http://nclex.ap-south-1.elasticbeanstalk.com/api/v1";
 
 // Create axios instance
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: "",
   headers: {
     "Content-Type": "application/json",
   },
